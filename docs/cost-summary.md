@@ -144,6 +144,8 @@ All live-provider runs in the log combined (cache hits included at USD 0). Cases
 
 ## Overall Total
 
+Gemini calls only (48 rows, including cache hits); the 6 mock rows are excluded.
+
 | LLM Calls | Input Tokens | Output Tokens | Estimated Cost (USD) |
 |---:|---:|---:|---:|
 | 48 | 32018 | 7609 | 0.019418 |

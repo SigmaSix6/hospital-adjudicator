@@ -116,6 +116,8 @@ def render(rows: list[dict]) -> str:
     w("")
 
     w("## Overall Total\n")
+    if mock_rows:
+        w(f"Gemini calls only ({len(rows)} rows, including cache hits); the {len(mock_rows)} mock rows are excluded.\n")
     w("| LLM Calls | Input Tokens | Output Tokens | Estimated Cost (USD) |")
     w("|---:|---:|---:|---:|")
     w(f"| {len(rows)} | {sum(r['input_tokens'] for r in rows)} | {sum(r['output_tokens'] for r in rows)} | "
