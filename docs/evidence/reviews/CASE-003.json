@@ -1,6 +1,6 @@
 {
   "case_id": "CASE-003",
-  "run_id": "f78926e42cd2",
+  "run_id": "bd667c5dab48",
   "status": "needs_review",
   "summary": "Needs human review: 0 high, 1 medium, 0 low severity finding(s). Main issues: Required claim field blank: Primary Diagnosis.",
   "human_review_required": true,
@@ -165,9 +165,9 @@
   ],
   "llm_calls": [],
   "audit": {
-    "run_id": "f78926e42cd2",
+    "run_id": "bd667c5dab48",
     "case_id": "CASE-003",
-    "timestamp": "2026-10-02T05:34:30.432+00:00",
+    "timestamp": "2026-10-02T05:41:14.238+00:00",
     "run_label": "canonical-live",
     "rule_set_version": "rules-2026.10.1",
     "prompt_version": "sop03-diagnosis-v1",

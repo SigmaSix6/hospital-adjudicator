@@ -26,7 +26,7 @@ function Row({ item, file, highlighted }: { item: ExtractedValue; file: string; 
 
 export function DocumentsView({ documents, highlighted }: { documents: ParsedDocument[]; highlighted: Set<string> }) {
   return (
-    <div className="grid gap-4 xl:grid-cols-2">
+    <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
       {documents.map((doc) => (
         <Card key={doc.file} className="gap-3 py-4">
           <CardHeader className="px-4">

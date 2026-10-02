@@ -1,6 +1,6 @@
 {
   "case_id": "CASE-008",
-  "run_id": "750ac967571d",
+  "run_id": "e75e01f52205",
   "status": "needs_review",
   "summary": "Needs human review: 1 high, 0 medium, 0 low severity finding(s). Main issues: Endoscopy Report missing for claimed Colonoscopy.",
   "human_review_required": true,
@@ -180,9 +180,9 @@
   ],
   "llm_calls": [],
   "audit": {
-    "run_id": "750ac967571d",
+    "run_id": "e75e01f52205",
     "case_id": "CASE-008",
-    "timestamp": "2026-10-02T05:35:15.862+00:00",
+    "timestamp": "2026-10-02T05:41:30.463+00:00",
     "run_label": "canonical-live",
     "rule_set_version": "rules-2026.10.1",
     "prompt_version": "sop03-diagnosis-v1",

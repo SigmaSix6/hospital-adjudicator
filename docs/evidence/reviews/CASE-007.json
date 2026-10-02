@@ -1,6 +1,6 @@
 {
   "case_id": "CASE-007",
-  "run_id": "332266173d4e",
+  "run_id": "cecf83af2d7a",
   "status": "needs_review",
   "summary": "Needs human review: 1 high, 0 medium, 0 low severity finding(s). Main issues: Discharge date is before admission date.",
   "human_review_required": true,
@@ -189,9 +189,9 @@
   ],
   "llm_calls": [],
   "audit": {
-    "run_id": "332266173d4e",
+    "run_id": "cecf83af2d7a",
     "case_id": "CASE-007",
-    "timestamp": "2026-10-02T05:35:15.791+00:00",
+    "timestamp": "2026-10-02T05:41:30.398+00:00",
     "run_label": "canonical-live",
     "rule_set_version": "rules-2026.10.1",
     "prompt_version": "sop03-diagnosis-v1",

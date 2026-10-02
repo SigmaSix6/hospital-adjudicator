@@ -50,7 +50,7 @@ function Kv({ k, v }: { k: string; v: React.ReactNode }) {
 export function LlmAuditView({ result }: { result: ReviewResult }) {
   const a = result.audit;
   return (
-    <div className="grid gap-4 xl:grid-cols-2">
+    <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
       <Card className="gap-3 py-4">
         <CardHeader className="px-4">
           <CardTitle className="text-base">LLM calls</CardTitle>

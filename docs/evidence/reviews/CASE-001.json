@@ -1,6 +1,6 @@
 {
   "case_id": "CASE-001",
-  "run_id": "1657eb3f5f5f",
+  "run_id": "02e7e2ef15a1",
   "status": "no_issues_found",
   "summary": "No review-triggering issues were detected by the configured SOP rules. This is not an approval (SOP-06).",
   "human_review_required": false,
@@ -125,9 +125,9 @@
   ],
   "llm_calls": [],
   "audit": {
-    "run_id": "1657eb3f5f5f",
+    "run_id": "02e7e2ef15a1",
     "case_id": "CASE-001",
-    "timestamp": "2026-10-02T05:34:22.319+00:00",
+    "timestamp": "2026-10-02T05:41:00.034+00:00",
     "run_label": "canonical-live",
     "rule_set_version": "rules-2026.10.1",
     "prompt_version": "sop03-diagnosis-v1",

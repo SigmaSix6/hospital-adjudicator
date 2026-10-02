@@ -131,7 +131,7 @@ function CaseList({
       </div>
     );
   return (
-    <ul className="grid gap-1.5 sm:grid-cols-2 lg:grid-cols-1">
+    <ul className="grid grid-cols-1 gap-1.5 sm:grid-cols-2 lg:grid-cols-1">
       {cases.map((c) => (
         <li key={c.case_id}>
           <button
@@ -475,8 +475,8 @@ export function Dashboard() {
           />
         </section>
 
-        <div className="grid gap-5 lg:grid-cols-[340px_1fr]">
-          <aside className="space-y-3 lg:sticky lg:top-5 lg:self-start">
+        <div className="grid grid-cols-1 gap-5 lg:grid-cols-[340px_1fr]">
+          <aside className="min-w-0 space-y-3 lg:sticky lg:top-5 lg:self-start">
             <Card className="gap-3 py-4">
               <CardHeader className="px-4">
                 <CardTitle className="text-base">Run settings</CardTitle>

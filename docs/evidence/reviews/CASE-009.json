@@ -1,6 +1,6 @@
 {
   "case_id": "CASE-009",
-  "run_id": "1c74d1f35912",
+  "run_id": "25527c86a68a",
   "status": "needs_review",
   "summary": "Needs human review: 0 high, 1 medium, 0 low severity finding(s). Main issues: Claim asserts a diagnosis the record leaves unconfirmed.",
   "human_review_required": true,
@@ -195,16 +195,16 @@
       "input_tokens": 772,
       "output_tokens": 208,
       "cost_usd": 0.000505,
-      "latency_ms": 18685,
+      "latency_ms": 14650,
       "retries": 1,
       "status": "ok",
       "token_source": "provider_usage_metadata"
     }
   ],
   "audit": {
-    "run_id": "1c74d1f35912",
+    "run_id": "25527c86a68a",
     "case_id": "CASE-009",
-    "timestamp": "2026-10-02T05:35:34.622+00:00",
+    "timestamp": "2026-10-02T05:41:45.185+00:00",
     "run_label": "canonical-live",
     "rule_set_version": "rules-2026.10.1",
     "prompt_version": "sop03-diagnosis-v1",

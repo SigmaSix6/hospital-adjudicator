@@ -1,6 +1,6 @@
 {
   "case_id": "CASE-010",
-  "run_id": "a02bc5186f6d",
+  "run_id": "3a49dae7835f",
   "status": "needs_review",
   "summary": "Needs human review: 1 high, 3 medium, 0 low severity finding(s). Main issues: Date of Birth mismatch across documents; Physician signature missing; Claim diagnosis conflicts with the documented diagnosis.",
   "human_review_required": true,
@@ -339,16 +339,16 @@
       "input_tokens": 767,
       "output_tokens": 183,
       "cost_usd": 0.000466,
-      "latency_ms": 2116,
+      "latency_ms": 1527,
       "retries": 0,
       "status": "ok",
       "token_source": "provider_usage_metadata"
     }
   ],
   "audit": {
-    "run_id": "a02bc5186f6d",
+    "run_id": "3a49dae7835f",
     "case_id": "CASE-010",
-    "timestamp": "2026-10-02T05:35:36.869+00:00",
+    "timestamp": "2026-10-02T05:41:46.795+00:00",
     "run_label": "canonical-live",
     "rule_set_version": "rules-2026.10.1",
     "prompt_version": "sop03-diagnosis-v1",

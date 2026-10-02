@@ -1,6 +1,6 @@
 # Evaluation Report
 
-Generated 2026-10-02T05:40:13+00:00 by `eval/run_eval.py` against `http://127.0.0.1:8741`, LLM mode `live` (model `gemini-3.1-flash-lite`), cache disabled. Gold set: `eval/expected.yaml` (candidate-authored).
+Generated 2026-10-02T05:44:48+00:00 by `eval/run_eval.py` against `http://127.0.0.1:8741`, LLM mode `live` (model `gemini-3.1-flash-lite`), cache disabled. Gold set: `eval/expected.yaml` (candidate-authored).
 
 ## Gates
 
@@ -17,8 +17,8 @@ Generated 2026-10-02T05:40:13+00:00 by `eval/run_eval.py` against `http://127.0.
 |---|---|
 | Case-status accuracy | 10/10 |
 | High-severity escalation recall | 4/4 |
-| Finding precision (review-triggering) | 0.909 (10 TP, 1 FP) |
-| Finding recall | 0.909 (10 TP, 1 FN) |
+| Finding precision (review-triggering) | 1.000 (11 TP, 0 FP) |
+| Finding recall | 1.000 (11 TP, 0 FN) |
 | Evidence validity | 29/29 |
 | Review-triggering findings on clean cases | 0 |
 
@@ -34,7 +34,7 @@ Generated 2026-10-02T05:40:13+00:00 by `eval/run_eval.py` against `http://127.0.
 | CASE-006 | no_issues_found | no_issues_found | PASS | - | 1 | 0.000435 | - |
 | CASE-007 | needs_review | needs_review | PASS | SOP-04.R1 | 0 | 0.000000 | - |
 | CASE-008 | needs_review | needs_review | PASS | SOP-05.R1 | 0 | 0.000000 | - |
-| CASE-009 | needs_review | needs_review | PASS* | SOP-06.R1 | 1 | 0.000000 | missed ('SOP-03.R2', 'diagnosis_uncertain', 'medium'); unexpected ('SOP-06.R1', 'undetermined', 'medium') |
+| CASE-009 | needs_review | needs_review | PASS | SOP-03.R2 | 1 | 0.000505 | - |
 | CASE-010 | needs_review | needs_review | PASS | SOP-02.R2, SOP-01.R2, SOP-03.R1, SOP-05.R2 | 1 | 0.000466 | - |
 
 `PASS*` = status correct but the finding set differs from gold (see Notes).
@@ -47,10 +47,10 @@ Generated 2026-10-02T05:40:13+00:00 by `eval/run_eval.py` against `http://127.0.
 | CASE-004 | {'equivalent': 5} | 5/5 |
 | CASE-005 | {'conflict': 5} | 5/5 |
 | CASE-006 | {'equivalent': 5} | 5/5 |
-| CASE-009 | {'claim_more_certain': 4, 'undetermined': 1} | 4/5 |
+| CASE-009 | {'claim_more_certain': 5} | 5/5 |
 | CASE-010 | {'conflict': 5} | 5/5 |
 
-## Mock vs Live SOP-03 Agreement: 5/6
+## Mock vs Live SOP-03 Agreement: 6/6
 
 | Case | Live verdict | Mock verdict |
 |---|---|---|
@@ -58,5 +58,5 @@ Generated 2026-10-02T05:40:13+00:00 by `eval/run_eval.py` against `http://127.0.
 | CASE-004 | equivalent | equivalent |
 | CASE-005 | conflict | conflict |
 | CASE-006 | equivalent | equivalent |
-| CASE-009 | undetermined | claim_more_certain |
+| CASE-009 | claim_more_certain | claim_more_certain |
 | CASE-010 | conflict | conflict |

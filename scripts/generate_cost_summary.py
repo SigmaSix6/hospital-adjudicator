@@ -22,6 +22,8 @@ LABEL_DESCRIPTIONS = {
     "cache-demo": "Pass 2: all 10 cases again with the cache enabled (shows cache hits)",
     "eval-live": "Evaluation run (eval/run_eval.py) through the API, live, cache disabled",
     "stability": "Stability check: LLM-dependent cases repeated with cache disabled",
+    "eval-mock-compare": "Mock client on the same prompts, for mock-vs-live agreement (no provider call, USD 0, estimated tokens)",
+    "ui": "Reviewer UI: 'Review all cases' clicked with Live Gemini and the cache switched off",
 }
 
 
@@ -80,8 +82,13 @@ def render(rows: list[dict]) -> str:
               f"{r['retries']} | {r['cache_status']} | {r['status']} |")
         w("")
 
+    mock_rows = [r for r in rows if r["provider"] == "mock"]
+    rows = [r for r in rows if r["provider"] != "mock"]
     w("## Totals by Case\n")
-    w("All runs in the log combined. Cases with 0 calls were fully decided by deterministic rules.\n")
+    w("All live-provider runs in the log combined (cache hits included at USD 0). Cases with 0 calls were fully "
+      "decided by deterministic rules."
+      + (f" The {len(mock_rows)} mock rows above use estimated tokens and cost USD 0; they are excluded from "
+         "the totals below so token counts reflect real Gemini usage only." if mock_rows else "") + "\n")
     w("| Case ID | LLM Calls | Provider Calls (cache miss/disabled) | Cache Hits | Input Tokens | Output Tokens | Estimated Cost (USD) | Total Latency (ms) |")
     w("|---|---:|---:|---:|---:|---:|---:|---:|")
     by_case: dict[str, list[dict]] = defaultdict(list)
@@ -99,6 +106,9 @@ def render(rows: list[dict]) -> str:
     w("| Run Label | LLM Calls | Input Tokens | Output Tokens | Estimated Cost (USD) | Mean Latency, provider calls (ms) |")
     w("|---|---:|---:|---:|---:|---:|")
     for label, items in groups.items():
+        items = [r for r in items if r["provider"] != "mock"]
+        if not items:
+            continue
         live = [r for r in items if r["cache_status"] != "hit"]
         mean = int(sum(r["latency_ms"] for r in live) / len(live)) if live else 0
         w(f"| {label} | {len(items)} | {sum(r['input_tokens'] for r in items)} | {sum(r['output_tokens'] for r in items)} | "

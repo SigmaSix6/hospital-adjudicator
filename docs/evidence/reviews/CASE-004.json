@@ -1,6 +1,6 @@
 {
   "case_id": "CASE-004",
-  "run_id": "1fc7d44b9a96",
+  "run_id": "554e05c62837",
   "status": "needs_review",
   "summary": "Needs human review: 1 high, 0 medium, 1 low severity finding(s). Main issues: Patient ID mismatch across documents.",
   "human_review_required": true,
@@ -249,16 +249,16 @@
       "input_tokens": 759,
       "output_tokens": 186,
       "cost_usd": 0.000469,
-      "latency_ms": 18782,
-      "retries": 1,
+      "latency_ms": 2968,
+      "retries": 0,
       "status": "ok",
       "token_source": "provider_usage_metadata"
     }
   ],
   "audit": {
-    "run_id": "1fc7d44b9a96",
+    "run_id": "554e05c62837",
     "case_id": "CASE-004",
-    "timestamp": "2026-10-02T05:34:49.292+00:00",
+    "timestamp": "2026-10-02T05:41:17.287+00:00",
     "run_label": "canonical-live",
     "rule_set_version": "rules-2026.10.1",
     "prompt_version": "sop03-diagnosis-v1",

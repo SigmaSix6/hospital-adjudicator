@@ -1,6 +1,6 @@
 {
   "case_id": "CASE-002",
-  "run_id": "5bdbf145e004",
+  "run_id": "2f61f13ea52a",
   "status": "needs_review",
   "summary": "Needs human review: 0 high, 1 medium, 0 low severity finding(s). Main issues: Required document missing: Discharge Summary.",
   "human_review_required": true,
@@ -168,16 +168,16 @@
       "input_tokens": 745,
       "output_tokens": 162,
       "cost_usd": 0.000429,
-      "latency_ms": 7988,
+      "latency_ms": 14081,
       "retries": 1,
       "status": "ok",
       "token_source": "provider_usage_metadata"
     }
   ],
   "audit": {
-    "run_id": "5bdbf145e004",
+    "run_id": "2f61f13ea52a",
     "case_id": "CASE-002",
-    "timestamp": "2026-10-02T05:34:30.364+00:00",
+    "timestamp": "2026-10-02T05:41:14.171+00:00",
     "run_label": "canonical-live",
     "rule_set_version": "rules-2026.10.1",
     "prompt_version": "sop03-diagnosis-v1",

@@ -1,6 +1,6 @@
 {
   "case_id": "CASE-006",
-  "run_id": "1808f4792f3c",
+  "run_id": "b9f3866f1f30",
   "status": "no_issues_found",
   "summary": "No review-triggering issues were detected by the configured SOP rules. This is not an approval (SOP-06).",
   "human_review_required": false,
@@ -132,16 +132,16 @@
       "input_tokens": 768,
       "output_tokens": 162,
       "cost_usd": 0.000435,
-      "latency_ms": 23520,
-      "retries": 2,
+      "latency_ms": 9838,
+      "retries": 0,
       "status": "ok",
       "token_source": "provider_usage_metadata"
     }
   ],
   "audit": {
-    "run_id": "1808f4792f3c",
+    "run_id": "b9f3866f1f30",
     "case_id": "CASE-006",
-    "timestamp": "2026-10-02T05:35:15.716+00:00",
+    "timestamp": "2026-10-02T05:41:30.291+00:00",
     "run_label": "canonical-live",
     "rule_set_version": "rules-2026.10.1",
     "prompt_version": "sop03-diagnosis-v1",
