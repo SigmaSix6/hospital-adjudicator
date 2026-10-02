@@ -22,3 +22,7 @@ ui/next-env.d.ts
 ui/*.tsbuildinfo
 
 .DS_Store
+
+# Agent tooling scratch
+agent-tools/
+terminals/
