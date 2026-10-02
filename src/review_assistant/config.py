@@ -90,8 +90,8 @@ def get_settings() -> Settings:
         gemini_api_key=os.getenv("GEMINI_API_KEY") or None,
         gemini_model=os.getenv("GEMINI_MODEL", "gemini-3.1-flash-lite"),
         gemini_thinking_level=os.getenv("GEMINI_THINKING_LEVEL", "minimal"),
-        llm_timeout_s=float(os.getenv("LLM_TIMEOUT_S", "15")),
-        llm_max_retries=int(os.getenv("LLM_MAX_RETRIES", "2")),
+        llm_timeout_s=float(os.getenv("LLM_TIMEOUT_S", "10")),
+        llm_max_retries=int(os.getenv("LLM_MAX_RETRIES", "3")),
         llm_min_confidence=float(os.getenv("LLM_MIN_CONFIDENCE", "0.7")),
         cache_enabled=_bool("LLM_CACHE_ENABLED", True),
         cors_origins=tuple(
