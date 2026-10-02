@@ -1,0 +1,254 @@
+{
+  "case_id": "CASE-009",
+  "run_id": "25527c86a68a",
+  "status": "needs_review",
+  "summary": "Needs human review: 0 high, 1 medium, 0 low severity finding(s). Main issues: Claim asserts a diagnosis the record leaves unconfirmed.",
+  "human_review_required": true,
+  "human_review_reasons": [
+    "[medium] SOP-03.R2: Claim asserts a diagnosis the record leaves unconfirmed"
+  ],
+  "findings": [
+    {
+      "finding_id": "CASE-009-F01",
+      "rule_id": "SOP-03.R2",
+      "category": "diagnosis_uncertain",
+      "severity": "medium",
+      "title": "Claim asserts a diagnosis the record leaves unconfirmed",
+      "description": "Claim states 'Acute appendicitis' as confirmed, but the record status is 'suspected'. The claim asserts a confirmed diagnosis of acute appendicitis, whereas the discharge summary explicitly states appendicitis was not confirmed. The physician note further characterizes the condition as suspected with non-definitive imaging.",
+      "policy_refs": [
+        {
+          "sop_id": "SOP-03",
+          "title": "Diagnosis Consistency & Semantic Equivalence",
+          "section": "Uncertainty",
+          "version": "sha256:4ac740a9971d",
+          "excerpt": "A suspected, possible, rule-out, or not-confirmed diagnosis must not be treated as a confirmed diagnosis. If a claim asserts a confirmed diagnosis while the clinical record remains uncertain, escalate for human review."
+        },
+        {
+          "sop_id": "SOP-06",
+          "title": "Human Review Escalation & AI Limits",
+          "section": "Mandatory escalation",
+          "version": "sha256:d2aa0cbd017d",
+          "excerpt": "Escalate when there is conflicting clinical evidence, uncertain diagnosis status, incomplete supporting evidence, identity mismatch, or a rule outcome cannot be determined confidently."
+        },
+        {
+          "sop_id": "SOP-03",
+          "title": "Diagnosis Consistency & Semantic Equivalence",
+          "section": "AI behavior",
+          "version": "sha256:4ac740a9971d",
+          "excerpt": "The assistant should cite the documents used to make the comparison and should not silently rewrite diagnoses."
+        }
+      ],
+      "evidence": [
+        {
+          "document_type": "Claim Submission Form",
+          "file": "patient_cases/CASE-009/04_claim_submission_form.docx",
+          "field": "Primary Diagnosis",
+          "value": "Acute appendicitis",
+          "location": "table 1, row 7",
+          "note": "Quoted by the model and verified against the document"
+        },
+        {
+          "document_type": "Discharge Summary",
+          "file": "patient_cases/CASE-009/03_discharge_summary.docx",
+          "field": "Primary Diagnosis",
+          "value": "Abdominal pain - appendicitis not confirmed",
+          "location": "table 1, row 8",
+          "note": "Quoted by the model and verified against the document"
+        },
+        {
+          "document_type": "Attending Physician Note",
+          "file": "patient_cases/CASE-009/02_attending_physician_note.docx",
+          "field": "Assessment",
+          "value": "Suspected appendicitis. Differential includes gastroenteritis. Imaging not definitive.",
+          "location": "section 'Assessment'",
+          "note": "Quoted by the model and verified against the document"
+        }
+      ],
+      "basis": "model_judgment",
+      "confidence": 1.0,
+      "requires_human_review": true
+    }
+  ],
+  "checks": [
+    {
+      "rule_id": "SOP-01.R1",
+      "sop_id": "SOP-01",
+      "description": "All four core documents are present",
+      "outcome": "pass",
+      "detail": "Registration, physician note, discharge summary and claim present"
+    },
+    {
+      "rule_id": "SOP-01.R2",
+      "sop_id": "SOP-01",
+      "description": "Required claim fields are filled",
+      "outcome": "pass",
+      "detail": "8 required fields present"
+    },
+    {
+      "rule_id": "SOP-02.R1",
+      "sop_id": "SOP-02",
+      "description": "Patient ID matches across documents",
+      "outcome": "pass",
+      "detail": "Same Patient ID on 4 documents"
+    },
+    {
+      "rule_id": "SOP-02.R2",
+      "sop_id": "SOP-02",
+      "description": "Date of Birth matches across documents",
+      "outcome": "pass",
+      "detail": "Same Date of Birth on 3 documents"
+    },
+    {
+      "rule_id": "SOP-02.R4",
+      "sop_id": "SOP-02",
+      "description": "Document Case IDs match the manifest",
+      "outcome": "pass",
+      "detail": "4 documents labelled CASE-009"
+    },
+    {
+      "rule_id": "SOP-02.R3",
+      "sop_id": "SOP-02",
+      "description": "Patient names agree after normalisation",
+      "outcome": "pass",
+      "detail": "4 name values, 1 distinct after normalisation"
+    },
+    {
+      "rule_id": "SOP-04.R1",
+      "sop_id": "SOP-04",
+      "description": "Discharge date is on or after admission date",
+      "outcome": "pass",
+      "detail": "2 document(s) with both dates checked"
+    },
+    {
+      "rule_id": "SOP-04.R3",
+      "sop_id": "SOP-04",
+      "description": "Admission Date agrees across documents",
+      "outcome": "pass",
+      "detail": "3 document(s) carry Admission Date"
+    },
+    {
+      "rule_id": "SOP-04.R3",
+      "sop_id": "SOP-04",
+      "description": "Discharge Date agrees across documents",
+      "outcome": "pass",
+      "detail": "2 document(s) carry Discharge Date"
+    },
+    {
+      "rule_id": "SOP-04.R2",
+      "sop_id": "SOP-04",
+      "description": "Procedure dates fall within the stay",
+      "outcome": "not_applicable",
+      "detail": "No dated procedure documented"
+    },
+    {
+      "rule_id": "SOP-05.R1",
+      "sop_id": "SOP-05",
+      "description": "Claimed procedure has its SOP-05 supporting report",
+      "outcome": "not_applicable",
+      "detail": "No procedure claimed"
+    },
+    {
+      "rule_id": "SOP-03.R1",
+      "sop_id": "SOP-03",
+      "description": "Claim diagnosis is consistent with the final documented diagnosis",
+      "outcome": "issue",
+      "detail": "Model verdict: claim_more_certain_than_record (confidence 1.0). The claim asserts a confirmed diagnosis of acute appendicitis, whereas the discharge summary explicitly states appendicitis was not confirmed. The physician note further characterizes the condition as suspected with non-definitive imaging."
+    }
+  ],
+  "uncertainties": [],
+  "documents_processed": [
+    {
+      "document_type": "Patient Registration Form",
+      "file": "patient_cases/CASE-009/01_registration_form.docx",
+      "sha256": "157ff3e85a4af322cd502b134aad955f4c7aa0254eec145ffb899e827f16337d",
+      "field_count": 7,
+      "section_count": 1
+    },
+    {
+      "document_type": "Attending Physician Note",
+      "file": "patient_cases/CASE-009/02_attending_physician_note.docx",
+      "sha256": "a88c763cc4574e159f9576c9b3f135344dfbebc9d672d4883fb9d8d10e27189a",
+      "field_count": 5,
+      "section_count": 3
+    },
+    {
+      "document_type": "Discharge Summary",
+      "file": "patient_cases/CASE-009/03_discharge_summary.docx",
+      "sha256": "4c79fdebb3b4b508c855bb0b63db2a288ce439f19e2d741ac81c456867076fa6",
+      "field_count": 8,
+      "section_count": 2
+    },
+    {
+      "document_type": "Claim Submission Form",
+      "file": "patient_cases/CASE-009/04_claim_submission_form.docx",
+      "sha256": "50956255774a47f971006f72b4e958241aeb0e9549aca8f656317d1bf70ae202",
+      "field_count": 11,
+      "section_count": 1
+    }
+  ],
+  "llm_calls": [
+    {
+      "step": "sop03_diagnosis_comparison",
+      "provider": "gemini",
+      "model": "gemini-3.1-flash-lite",
+      "cache_status": "miss",
+      "input_tokens": 772,
+      "output_tokens": 208,
+      "cost_usd": 0.000505,
+      "latency_ms": 14650,
+      "retries": 1,
+      "status": "ok",
+      "token_source": "provider_usage_metadata"
+    }
+  ],
+  "audit": {
+    "run_id": "25527c86a68a",
+    "case_id": "CASE-009",
+    "timestamp": "2026-10-02T05:41:45.185+00:00",
+    "run_label": "canonical-live",
+    "rule_set_version": "rules-2026.10.1",
+    "prompt_version": "sop03-diagnosis-v1",
+    "llm_mode": "live",
+    "llm_model": "gemini-3.1-flash-lite",
+    "sop_versions": {
+      "SOP-01": "sha256:5f85f4e1424f",
+      "SOP-02": "sha256:08fb85589c25",
+      "SOP-03": "sha256:4ac740a9971d",
+      "SOP-04": "sha256:21ba0ce0970d",
+      "SOP-05": "sha256:08e58ec82a10",
+      "SOP-06": "sha256:d2aa0cbd017d",
+      "SOP-07": "sha256:46a8df2a3eba"
+    },
+    "input_documents": [
+      {
+        "document_type": "Patient Registration Form",
+        "file": "patient_cases/CASE-009/01_registration_form.docx",
+        "sha256": "157ff3e85a4af322cd502b134aad955f4c7aa0254eec145ffb899e827f16337d",
+        "field_count": 7,
+        "section_count": 1
+      },
+      {
+        "document_type": "Attending Physician Note",
+        "file": "patient_cases/CASE-009/02_attending_physician_note.docx",
+        "sha256": "a88c763cc4574e159f9576c9b3f135344dfbebc9d672d4883fb9d8d10e27189a",
+        "field_count": 5,
+        "section_count": 3
+      },
+      {
+        "document_type": "Discharge Summary",
+        "file": "patient_cases/CASE-009/03_discharge_summary.docx",
+        "sha256": "4c79fdebb3b4b508c855bb0b63db2a288ce439f19e2d741ac81c456867076fa6",
+        "field_count": 8,
+        "section_count": 2
+      },
+      {
+        "document_type": "Claim Submission Form",
+        "file": "patient_cases/CASE-009/04_claim_submission_form.docx",
+        "sha256": "50956255774a47f971006f72b4e958241aeb0e9549aca8f656317d1bf70ae202",
+        "field_count": 11,
+        "section_count": 1
+      }
+    ]
+  },
+  "decision_boundary": "This assistant identifies issues and summarises evidence only. It does not approve, reject, or deny claims (SOP-06). 'no_issues_found' means no configured rule detected an issue; it is not an approval."
+}

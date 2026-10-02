@@ -1,0 +1,241 @@
+{
+  "case_id": "CASE-007",
+  "run_id": "cecf83af2d7a",
+  "status": "needs_review",
+  "summary": "Needs human review: 1 high, 0 medium, 0 low severity finding(s). Main issues: Discharge date is before admission date.",
+  "human_review_required": true,
+  "human_review_reasons": [
+    "[high] SOP-04.R1: Discharge date is before admission date"
+  ],
+  "findings": [
+    {
+      "finding_id": "CASE-007-F01",
+      "rule_id": "SOP-04.R1",
+      "category": "date_inconsistency",
+      "severity": "high",
+      "title": "Discharge date is before admission date",
+      "description": "Discharge precedes admission on: Claim Submission Form, Discharge Summary. SOP-04 classes this as high severity.",
+      "policy_refs": [
+        {
+          "sop_id": "SOP-04",
+          "title": "Admission, Discharge & Procedure Date Validation",
+          "section": "Admission/discharge rule",
+          "version": "sha256:21ba0ce0970d",
+          "excerpt": "Discharge date must be the same as or later than the admission date."
+        },
+        {
+          "sop_id": "SOP-04",
+          "title": "Admission, Discharge & Procedure Date Validation",
+          "section": "Severity",
+          "version": "sha256:21ba0ce0970d",
+          "excerpt": "A discharge date before admission is a high-severity issue and requires review."
+        }
+      ],
+      "evidence": [
+        {
+          "document_type": "Discharge Summary",
+          "file": "patient_cases/CASE-007/03_discharge_summary.docx",
+          "field": "Admission Date",
+          "value": "2026-08-22",
+          "location": "table 1, row 5",
+          "note": null
+        },
+        {
+          "document_type": "Discharge Summary",
+          "file": "patient_cases/CASE-007/03_discharge_summary.docx",
+          "field": "Discharge Date",
+          "value": "2026-08-21",
+          "location": "table 1, row 6",
+          "note": "Earlier than admission"
+        },
+        {
+          "document_type": "Claim Submission Form",
+          "file": "patient_cases/CASE-007/04_claim_submission_form.docx",
+          "field": "Admission Date",
+          "value": "2026-08-22",
+          "location": "table 1, row 5",
+          "note": null
+        },
+        {
+          "document_type": "Claim Submission Form",
+          "file": "patient_cases/CASE-007/04_claim_submission_form.docx",
+          "field": "Discharge Date",
+          "value": "2026-08-21",
+          "location": "table 1, row 6",
+          "note": "Earlier than admission"
+        }
+      ],
+      "basis": "documented_fact",
+      "confidence": 1.0,
+      "requires_human_review": true
+    }
+  ],
+  "checks": [
+    {
+      "rule_id": "SOP-01.R1",
+      "sop_id": "SOP-01",
+      "description": "All four core documents are present",
+      "outcome": "pass",
+      "detail": "Registration, physician note, discharge summary and claim present"
+    },
+    {
+      "rule_id": "SOP-01.R2",
+      "sop_id": "SOP-01",
+      "description": "Required claim fields are filled",
+      "outcome": "pass",
+      "detail": "8 required fields present"
+    },
+    {
+      "rule_id": "SOP-02.R1",
+      "sop_id": "SOP-02",
+      "description": "Patient ID matches across documents",
+      "outcome": "pass",
+      "detail": "Same Patient ID on 4 documents"
+    },
+    {
+      "rule_id": "SOP-02.R2",
+      "sop_id": "SOP-02",
+      "description": "Date of Birth matches across documents",
+      "outcome": "pass",
+      "detail": "Same Date of Birth on 3 documents"
+    },
+    {
+      "rule_id": "SOP-02.R4",
+      "sop_id": "SOP-02",
+      "description": "Document Case IDs match the manifest",
+      "outcome": "pass",
+      "detail": "4 documents labelled CASE-007"
+    },
+    {
+      "rule_id": "SOP-02.R3",
+      "sop_id": "SOP-02",
+      "description": "Patient names agree after normalisation",
+      "outcome": "pass",
+      "detail": "4 name values, 1 distinct after normalisation"
+    },
+    {
+      "rule_id": "SOP-04.R1",
+      "sop_id": "SOP-04",
+      "description": "Discharge date is on or after admission date",
+      "outcome": "issue",
+      "detail": "2 document(s) with both dates checked"
+    },
+    {
+      "rule_id": "SOP-04.R3",
+      "sop_id": "SOP-04",
+      "description": "Admission Date agrees across documents",
+      "outcome": "pass",
+      "detail": "3 document(s) carry Admission Date"
+    },
+    {
+      "rule_id": "SOP-04.R3",
+      "sop_id": "SOP-04",
+      "description": "Discharge Date agrees across documents",
+      "outcome": "pass",
+      "detail": "2 document(s) carry Discharge Date"
+    },
+    {
+      "rule_id": "SOP-04.R2",
+      "sop_id": "SOP-04",
+      "description": "Procedure dates fall within the stay",
+      "outcome": "not_applicable",
+      "detail": "No dated procedure documented"
+    },
+    {
+      "rule_id": "SOP-05.R1",
+      "sop_id": "SOP-05",
+      "description": "Claimed procedure has its SOP-05 supporting report",
+      "outcome": "not_applicable",
+      "detail": "No procedure claimed"
+    },
+    {
+      "rule_id": "SOP-03.R1",
+      "sop_id": "SOP-03",
+      "description": "Claim diagnosis is consistent with the final documented diagnosis",
+      "outcome": "pass",
+      "detail": "Claim and discharge diagnoses match exactly after normalisation and no uncertainty wording was found; LLM not called"
+    }
+  ],
+  "uncertainties": [],
+  "documents_processed": [
+    {
+      "document_type": "Patient Registration Form",
+      "file": "patient_cases/CASE-007/01_registration_form.docx",
+      "sha256": "5356c34440ea40c707666528da32b2624199a5992d90edc903896ac24150df88",
+      "field_count": 7,
+      "section_count": 1
+    },
+    {
+      "document_type": "Attending Physician Note",
+      "file": "patient_cases/CASE-007/02_attending_physician_note.docx",
+      "sha256": "eabcd1685e1052c0ab6b32b7713fc62465eccce7a0f257412e7f795809905431",
+      "field_count": 5,
+      "section_count": 3
+    },
+    {
+      "document_type": "Discharge Summary",
+      "file": "patient_cases/CASE-007/03_discharge_summary.docx",
+      "sha256": "b590264f32355df32358bb3e40d435daedaa36a8af292af0c0070134e591f714",
+      "field_count": 8,
+      "section_count": 2
+    },
+    {
+      "document_type": "Claim Submission Form",
+      "file": "patient_cases/CASE-007/04_claim_submission_form.docx",
+      "sha256": "09c2088e679bd6447cb128d361cc74984d89a5004312e38ed211bb6d61f093a6",
+      "field_count": 11,
+      "section_count": 1
+    }
+  ],
+  "llm_calls": [],
+  "audit": {
+    "run_id": "cecf83af2d7a",
+    "case_id": "CASE-007",
+    "timestamp": "2026-10-02T05:41:30.398+00:00",
+    "run_label": "canonical-live",
+    "rule_set_version": "rules-2026.10.1",
+    "prompt_version": "sop03-diagnosis-v1",
+    "llm_mode": "live",
+    "llm_model": "gemini-3.1-flash-lite",
+    "sop_versions": {
+      "SOP-01": "sha256:5f85f4e1424f",
+      "SOP-02": "sha256:08fb85589c25",
+      "SOP-03": "sha256:4ac740a9971d",
+      "SOP-04": "sha256:21ba0ce0970d",
+      "SOP-05": "sha256:08e58ec82a10",
+      "SOP-06": "sha256:d2aa0cbd017d",
+      "SOP-07": "sha256:46a8df2a3eba"
+    },
+    "input_documents": [
+      {
+        "document_type": "Patient Registration Form",
+        "file": "patient_cases/CASE-007/01_registration_form.docx",
+        "sha256": "5356c34440ea40c707666528da32b2624199a5992d90edc903896ac24150df88",
+        "field_count": 7,
+        "section_count": 1
+      },
+      {
+        "document_type": "Attending Physician Note",
+        "file": "patient_cases/CASE-007/02_attending_physician_note.docx",
+        "sha256": "eabcd1685e1052c0ab6b32b7713fc62465eccce7a0f257412e7f795809905431",
+        "field_count": 5,
+        "section_count": 3
+      },
+      {
+        "document_type": "Discharge Summary",
+        "file": "patient_cases/CASE-007/03_discharge_summary.docx",
+        "sha256": "b590264f32355df32358bb3e40d435daedaa36a8af292af0c0070134e591f714",
+        "field_count": 8,
+        "section_count": 2
+      },
+      {
+        "document_type": "Claim Submission Form",
+        "file": "patient_cases/CASE-007/04_claim_submission_form.docx",
+        "sha256": "09c2088e679bd6447cb128d361cc74984d89a5004312e38ed211bb6d61f093a6",
+        "field_count": 11,
+        "section_count": 1
+      }
+    ]
+  },
+  "decision_boundary": "This assistant identifies issues and summarises evidence only. It does not approve, reject, or deny claims (SOP-06). 'no_issues_found' means no configured rule detected an issue; it is not an approval."
+}

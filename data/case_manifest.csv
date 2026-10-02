@@ -1,0 +1,41 @@
+case_id,document_type,relative_path
+CASE-001,Patient Registration Form,patient_cases/CASE-001/01_registration_form.docx
+CASE-001,Attending Physician Note,patient_cases/CASE-001/02_attending_physician_note.docx
+CASE-001,Discharge Summary,patient_cases/CASE-001/03_discharge_summary.docx
+CASE-001,Claim Submission Form,patient_cases/CASE-001/04_claim_submission_form.docx
+CASE-002,Patient Registration Form,patient_cases/CASE-002/01_registration_form.docx
+CASE-002,Attending Physician Note,patient_cases/CASE-002/02_attending_physician_note.docx
+CASE-002,Claim Submission Form,patient_cases/CASE-002/04_claim_submission_form.docx
+CASE-003,Patient Registration Form,patient_cases/CASE-003/01_registration_form.docx
+CASE-003,Attending Physician Note,patient_cases/CASE-003/02_attending_physician_note.docx
+CASE-003,Discharge Summary,patient_cases/CASE-003/03_discharge_summary.docx
+CASE-003,Claim Submission Form,patient_cases/CASE-003/04_claim_submission_form.docx
+CASE-004,Patient Registration Form,patient_cases/CASE-004/01_registration_form.docx
+CASE-004,Attending Physician Note,patient_cases/CASE-004/02_attending_physician_note.docx
+CASE-004,Discharge Summary,patient_cases/CASE-004/03_discharge_summary.docx
+CASE-004,Claim Submission Form,patient_cases/CASE-004/04_claim_submission_form.docx
+CASE-005,Patient Registration Form,patient_cases/CASE-005/01_registration_form.docx
+CASE-005,Attending Physician Note,patient_cases/CASE-005/02_attending_physician_note.docx
+CASE-005,Discharge Summary,patient_cases/CASE-005/03_discharge_summary.docx
+CASE-005,Claim Submission Form,patient_cases/CASE-005/04_claim_submission_form.docx
+CASE-006,Patient Registration Form,patient_cases/CASE-006/01_registration_form.docx
+CASE-006,Attending Physician Note,patient_cases/CASE-006/02_attending_physician_note.docx
+CASE-006,Discharge Summary,patient_cases/CASE-006/03_discharge_summary.docx
+CASE-006,Claim Submission Form,patient_cases/CASE-006/04_claim_submission_form.docx
+CASE-007,Patient Registration Form,patient_cases/CASE-007/01_registration_form.docx
+CASE-007,Attending Physician Note,patient_cases/CASE-007/02_attending_physician_note.docx
+CASE-007,Discharge Summary,patient_cases/CASE-007/03_discharge_summary.docx
+CASE-007,Claim Submission Form,patient_cases/CASE-007/04_claim_submission_form.docx
+CASE-008,Patient Registration Form,patient_cases/CASE-008/01_registration_form.docx
+CASE-008,Attending Physician Note,patient_cases/CASE-008/02_attending_physician_note.docx
+CASE-008,Discharge Summary,patient_cases/CASE-008/03_discharge_summary.docx
+CASE-008,Claim Submission Form,patient_cases/CASE-008/04_claim_submission_form.docx
+CASE-009,Patient Registration Form,patient_cases/CASE-009/01_registration_form.docx
+CASE-009,Attending Physician Note,patient_cases/CASE-009/02_attending_physician_note.docx
+CASE-009,Discharge Summary,patient_cases/CASE-009/03_discharge_summary.docx
+CASE-009,Claim Submission Form,patient_cases/CASE-009/04_claim_submission_form.docx
+CASE-010,Patient Registration Form,patient_cases/CASE-010/01_registration_form.docx
+CASE-010,Attending Physician Note,patient_cases/CASE-010/02_attending_physician_note.docx
+CASE-010,Discharge Summary,patient_cases/CASE-010/03_discharge_summary.docx
+CASE-010,Claim Submission Form,patient_cases/CASE-010/04_claim_submission_form.docx
+CASE-010,Radiology Report,patient_cases/CASE-010/05_radiology_report.docx

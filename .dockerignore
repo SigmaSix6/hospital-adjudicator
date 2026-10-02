@@ -1,0 +1,11 @@
+.git
+.env
+.env.*
+!.env.example
+.venv
+var
+outputs
+**/__pycache__
+ui
+agent-tools
+terminals

@@ -1,0 +1,23 @@
+services:
+  api:
+    build: .
+    ports:
+      - "8741:8741"
+    env_file:
+      - path: .env
+        required: false
+    volumes:
+      - review-var:/app/var
+
+  ui:
+    build: ./ui
+    ports:
+      - "3417:3417"
+    environment:
+      API_BASE_URL: http://api:8741
+    depends_on:
+      api:
+        condition: service_healthy
+
+volumes:
+  review-var:

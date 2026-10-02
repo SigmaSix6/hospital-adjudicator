@@ -1,0 +1,82 @@
+# Candidate-authored gold set (the package ships no labels). Each expectation is my reading of
+# the SOPs; contested interpretations are listed as assumptions in docs/requirement-analysis.md.
+#
+# findings: review-triggering findings expected, matched on (rule_id, category, severity).
+#   `any_of` accepts alternative rule/category pairs that are clinically equivalent escalations.
+# optional: findings that may appear without counting as false positives (informational, low).
+# llm_case: true when the SOP-03 step is expected to call the LLM.
+
+CASE-001:
+  status: no_issues_found
+  findings: []
+  llm_case: false
+  note: Clean control. Chest radiograph ordered but not claimed and not an SOP-05 procedure.
+
+CASE-002:
+  status: needs_review
+  findings:
+    - {rule_id: SOP-01.R1, category: missing_document, severity: medium}
+  llm_case: true
+  note: Discharge Summary absent from the manifest.
+
+CASE-003:
+  status: needs_review
+  findings:
+    - {rule_id: SOP-01.R2, category: missing_field, severity: medium}
+  llm_case: false
+  note: Claim Primary Diagnosis blank; must not be inferred from the discharge summary.
+
+CASE-004:
+  status: needs_review
+  findings:
+    - {rule_id: SOP-02.R1, category: identity_mismatch, severity: high}
+  optional:
+    - {rule_id: SOP-03.R3, category: observation, severity: low}
+  llm_case: true
+  note: Claim Patient ID PT-0044 vs PT-0004. "Stable angina suspected" in the note is a distractor (A-03).
+
+CASE-005:
+  status: needs_review
+  findings:
+    - {rule_id: SOP-03.R1, category: diagnosis_conflict, severity: medium}
+  llm_case: true
+  note: Claim "Acute bronchitis" vs record "Pneumonia" (SOP-03's own conflict example).
+
+CASE-006:
+  status: no_issues_found
+  findings: []
+  llm_case: true
+  note: Semantic-equivalence trap ("T2DM, uncomplicated" = "Type 2 diabetes mellitus without complications").
+
+CASE-007:
+  status: needs_review
+  findings:
+    - {rule_id: SOP-04.R1, category: date_inconsistency, severity: high}
+  llm_case: false
+  note: Discharge 2026-08-21 before admission 2026-08-22.
+
+CASE-008:
+  status: needs_review
+  findings:
+    - {rule_id: SOP-05.R1, category: missing_document, severity: high}
+  llm_case: false
+  note: Colonoscopy claimed, no Endoscopy Report.
+
+CASE-009:
+  status: needs_review
+  findings:
+    - any_of:
+        - {rule_id: SOP-03.R2, category: diagnosis_uncertain, severity: medium}
+        - {rule_id: SOP-03.R1, category: diagnosis_conflict, severity: medium}
+  llm_case: true
+  note: Claim "Acute appendicitis" while the record says appendicitis not confirmed.
+
+CASE-010:
+  status: needs_review
+  findings:
+    - {rule_id: SOP-02.R2, category: identity_mismatch, severity: high}
+    - {rule_id: SOP-01.R2, category: missing_field, severity: medium}
+    - {rule_id: SOP-03.R1, category: diagnosis_conflict, severity: medium}
+    - {rule_id: SOP-05.R2, category: incomplete_report, severity: medium}
+  llm_case: true
+  note: DOB mismatch, diagnosis conflict, unsigned claim, blank radiology Impression.

@@ -1,0 +1,232 @@
+{
+  "case_id": "CASE-008",
+  "run_id": "e75e01f52205",
+  "status": "needs_review",
+  "summary": "Needs human review: 1 high, 0 medium, 0 low severity finding(s). Main issues: Endoscopy Report missing for claimed Colonoscopy.",
+  "human_review_required": true,
+  "human_review_reasons": [
+    "[high] SOP-05.R1: Endoscopy Report missing for claimed Colonoscopy"
+  ],
+  "findings": [
+    {
+      "finding_id": "CASE-008-F01",
+      "rule_id": "SOP-05.R1",
+      "category": "missing_document",
+      "severity": "high",
+      "title": "Endoscopy Report missing for claimed Colonoscopy",
+      "description": "The claim includes 'Colonoscopy', which SOP-05 says requires a Endoscopy Report. No such report is in the case manifest. SOP-05 classes a missing required report as high severity.",
+      "policy_refs": [
+        {
+          "sop_id": "SOP-05",
+          "title": "Procedure Supporting Documentation",
+          "section": "Colonoscopy",
+          "version": "sha256:08e58ec82a10",
+          "excerpt": "Requires an Endoscopy Report documenting procedure date, findings, and conclusion/impression."
+        },
+        {
+          "sop_id": "SOP-05",
+          "title": "Procedure Supporting Documentation",
+          "section": "Missing report",
+          "version": "sha256:08e58ec82a10",
+          "excerpt": "If a required procedure report is absent, flag as high severity."
+        },
+        {
+          "sop_id": "SOP-01",
+          "title": "Required Document Completeness",
+          "section": "Procedure-specific support",
+          "version": "sha256:5f85f4e1424f",
+          "excerpt": "If the claim includes a procedure listed in SOP-05, the corresponding supporting report is also required."
+        }
+      ],
+      "evidence": [
+        {
+          "document_type": "Claim Submission Form",
+          "file": "patient_cases/CASE-008/04_claim_submission_form.docx",
+          "field": "Claimed Procedure",
+          "value": "Colonoscopy",
+          "location": "table 1, row 8",
+          "note": null
+        },
+        {
+          "document_type": "Case Manifest",
+          "file": "case_manifest.csv",
+          "field": "document_type",
+          "value": "Patient Registration Form, Attending Physician Note, Discharge Summary, Claim Submission Form",
+          "location": "rows where case_id = CASE-008",
+          "note": "No 'Endoscopy Report' row in the manifest"
+        }
+      ],
+      "basis": "documented_fact",
+      "confidence": 1.0,
+      "requires_human_review": true
+    }
+  ],
+  "checks": [
+    {
+      "rule_id": "SOP-01.R1",
+      "sop_id": "SOP-01",
+      "description": "All four core documents are present",
+      "outcome": "pass",
+      "detail": "Registration, physician note, discharge summary and claim present"
+    },
+    {
+      "rule_id": "SOP-01.R2",
+      "sop_id": "SOP-01",
+      "description": "Required claim fields are filled",
+      "outcome": "pass",
+      "detail": "8 required fields present"
+    },
+    {
+      "rule_id": "SOP-02.R1",
+      "sop_id": "SOP-02",
+      "description": "Patient ID matches across documents",
+      "outcome": "pass",
+      "detail": "Same Patient ID on 4 documents"
+    },
+    {
+      "rule_id": "SOP-02.R2",
+      "sop_id": "SOP-02",
+      "description": "Date of Birth matches across documents",
+      "outcome": "pass",
+      "detail": "Same Date of Birth on 3 documents"
+    },
+    {
+      "rule_id": "SOP-02.R4",
+      "sop_id": "SOP-02",
+      "description": "Document Case IDs match the manifest",
+      "outcome": "pass",
+      "detail": "4 documents labelled CASE-008"
+    },
+    {
+      "rule_id": "SOP-02.R3",
+      "sop_id": "SOP-02",
+      "description": "Patient names agree after normalisation",
+      "outcome": "pass",
+      "detail": "4 name values, 1 distinct after normalisation"
+    },
+    {
+      "rule_id": "SOP-04.R1",
+      "sop_id": "SOP-04",
+      "description": "Discharge date is on or after admission date",
+      "outcome": "pass",
+      "detail": "2 document(s) with both dates checked"
+    },
+    {
+      "rule_id": "SOP-04.R3",
+      "sop_id": "SOP-04",
+      "description": "Admission Date agrees across documents",
+      "outcome": "pass",
+      "detail": "3 document(s) carry Admission Date"
+    },
+    {
+      "rule_id": "SOP-04.R3",
+      "sop_id": "SOP-04",
+      "description": "Discharge Date agrees across documents",
+      "outcome": "pass",
+      "detail": "2 document(s) carry Discharge Date"
+    },
+    {
+      "rule_id": "SOP-04.R2",
+      "sop_id": "SOP-04",
+      "description": "Procedure dates fall within the stay",
+      "outcome": "pass",
+      "detail": "1 procedure date(s) checked against 2026-08-24 to 2026-08-25"
+    },
+    {
+      "rule_id": "SOP-05.R1",
+      "sop_id": "SOP-05",
+      "description": "Claimed procedure has its SOP-05 supporting report",
+      "outcome": "issue",
+      "detail": "Endoscopy Report absent"
+    },
+    {
+      "rule_id": "SOP-03.R1",
+      "sop_id": "SOP-03",
+      "description": "Claim diagnosis is consistent with the final documented diagnosis",
+      "outcome": "pass",
+      "detail": "Claim and discharge diagnoses match exactly after normalisation and no uncertainty wording was found; LLM not called"
+    }
+  ],
+  "uncertainties": [],
+  "documents_processed": [
+    {
+      "document_type": "Patient Registration Form",
+      "file": "patient_cases/CASE-008/01_registration_form.docx",
+      "sha256": "b89c27cb96ecf18298adaa78108b078964f40bd42e0f932d7251f14655faaf9c",
+      "field_count": 7,
+      "section_count": 1
+    },
+    {
+      "document_type": "Attending Physician Note",
+      "file": "patient_cases/CASE-008/02_attending_physician_note.docx",
+      "sha256": "22b6769eba9dec24c8f8f395ecc16b9abd573f866767154ff7c5cea4fe3e5364",
+      "field_count": 5,
+      "section_count": 4
+    },
+    {
+      "document_type": "Discharge Summary",
+      "file": "patient_cases/CASE-008/03_discharge_summary.docx",
+      "sha256": "a465e91be781f24f423199c11162f29799d0351123228e0a5b571a6961edfbe9",
+      "field_count": 8,
+      "section_count": 3
+    },
+    {
+      "document_type": "Claim Submission Form",
+      "file": "patient_cases/CASE-008/04_claim_submission_form.docx",
+      "sha256": "8ce30295ebf0a0b6bddce27ac7bf39c496aca29d818b135984899575ba2a27db",
+      "field_count": 11,
+      "section_count": 1
+    }
+  ],
+  "llm_calls": [],
+  "audit": {
+    "run_id": "e75e01f52205",
+    "case_id": "CASE-008",
+    "timestamp": "2026-10-02T05:41:30.463+00:00",
+    "run_label": "canonical-live",
+    "rule_set_version": "rules-2026.10.1",
+    "prompt_version": "sop03-diagnosis-v1",
+    "llm_mode": "live",
+    "llm_model": "gemini-3.1-flash-lite",
+    "sop_versions": {
+      "SOP-01": "sha256:5f85f4e1424f",
+      "SOP-02": "sha256:08fb85589c25",
+      "SOP-03": "sha256:4ac740a9971d",
+      "SOP-04": "sha256:21ba0ce0970d",
+      "SOP-05": "sha256:08e58ec82a10",
+      "SOP-06": "sha256:d2aa0cbd017d",
+      "SOP-07": "sha256:46a8df2a3eba"
+    },
+    "input_documents": [
+      {
+        "document_type": "Patient Registration Form",
+        "file": "patient_cases/CASE-008/01_registration_form.docx",
+        "sha256": "b89c27cb96ecf18298adaa78108b078964f40bd42e0f932d7251f14655faaf9c",
+        "field_count": 7,
+        "section_count": 1
+      },
+      {
+        "document_type": "Attending Physician Note",
+        "file": "patient_cases/CASE-008/02_attending_physician_note.docx",
+        "sha256": "22b6769eba9dec24c8f8f395ecc16b9abd573f866767154ff7c5cea4fe3e5364",
+        "field_count": 5,
+        "section_count": 4
+      },
+      {
+        "document_type": "Discharge Summary",
+        "file": "patient_cases/CASE-008/03_discharge_summary.docx",
+        "sha256": "a465e91be781f24f423199c11162f29799d0351123228e0a5b571a6961edfbe9",
+        "field_count": 8,
+        "section_count": 3
+      },
+      {
+        "document_type": "Claim Submission Form",
+        "file": "patient_cases/CASE-008/04_claim_submission_form.docx",
+        "sha256": "8ce30295ebf0a0b6bddce27ac7bf39c496aca29d818b135984899575ba2a27db",
+        "field_count": 11,
+        "section_count": 1
+      }
+    ]
+  },
+  "decision_boundary": "This assistant identifies issues and summarises evidence only. It does not approve, reject, or deny claims (SOP-06). 'no_issues_found' means no configured rule detected an issue; it is not an approval."
+}

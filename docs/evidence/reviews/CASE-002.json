@@ -1,0 +1,220 @@
+{
+  "case_id": "CASE-002",
+  "run_id": "2f61f13ea52a",
+  "status": "needs_review",
+  "summary": "Needs human review: 0 high, 1 medium, 0 low severity finding(s). Main issues: Required document missing: Discharge Summary.",
+  "human_review_required": true,
+  "human_review_reasons": [
+    "[medium] SOP-01.R1: Required document missing: Discharge Summary"
+  ],
+  "findings": [
+    {
+      "finding_id": "CASE-002-F01",
+      "rule_id": "SOP-01.R1",
+      "category": "missing_document",
+      "severity": "medium",
+      "title": "Required document missing: Discharge Summary",
+      "description": "SOP-01 requires a Discharge Summary for every case, but the case manifest has no Discharge Summary for CASE-002. Its content was not inferred from other documents.",
+      "policy_refs": [
+        {
+          "sop_id": "SOP-01",
+          "title": "Required Document Completeness",
+          "section": "Required documents",
+          "version": "sha256:5f85f4e1424f",
+          "excerpt": "Every case must contain: (1) Patient Registration Form, (2) Attending Physician Note, (3) Discharge Summary, and (4) Claim Submission Form."
+        },
+        {
+          "sop_id": "SOP-01",
+          "title": "Required Document Completeness",
+          "section": "Review action",
+          "version": "sha256:5f85f4e1424f",
+          "excerpt": "A missing required core document, required claim field, or required procedure-support document must be flagged for review. Do not infer missing content from another document."
+        }
+      ],
+      "evidence": [
+        {
+          "document_type": "Case Manifest",
+          "file": "case_manifest.csv",
+          "field": "document_type",
+          "value": "Patient Registration Form, Attending Physician Note, Claim Submission Form",
+          "location": "rows where case_id = CASE-002",
+          "note": "No 'Discharge Summary' row in the manifest"
+        }
+      ],
+      "basis": "documented_fact",
+      "confidence": 1.0,
+      "requires_human_review": true
+    }
+  ],
+  "checks": [
+    {
+      "rule_id": "SOP-01.R1",
+      "sop_id": "SOP-01",
+      "description": "All four core documents are present",
+      "outcome": "issue",
+      "detail": "Missing: Discharge Summary"
+    },
+    {
+      "rule_id": "SOP-01.R2",
+      "sop_id": "SOP-01",
+      "description": "Required claim fields are filled",
+      "outcome": "pass",
+      "detail": "8 required fields present"
+    },
+    {
+      "rule_id": "SOP-02.R1",
+      "sop_id": "SOP-02",
+      "description": "Patient ID matches across documents",
+      "outcome": "pass",
+      "detail": "Same Patient ID on 3 documents"
+    },
+    {
+      "rule_id": "SOP-02.R2",
+      "sop_id": "SOP-02",
+      "description": "Date of Birth matches across documents",
+      "outcome": "pass",
+      "detail": "Same Date of Birth on 2 documents"
+    },
+    {
+      "rule_id": "SOP-02.R4",
+      "sop_id": "SOP-02",
+      "description": "Document Case IDs match the manifest",
+      "outcome": "pass",
+      "detail": "3 documents labelled CASE-002"
+    },
+    {
+      "rule_id": "SOP-02.R3",
+      "sop_id": "SOP-02",
+      "description": "Patient names agree after normalisation",
+      "outcome": "pass",
+      "detail": "3 name values, 1 distinct after normalisation"
+    },
+    {
+      "rule_id": "SOP-04.R1",
+      "sop_id": "SOP-04",
+      "description": "Discharge date is on or after admission date",
+      "outcome": "pass",
+      "detail": "1 document(s) with both dates checked"
+    },
+    {
+      "rule_id": "SOP-04.R3",
+      "sop_id": "SOP-04",
+      "description": "Admission Date agrees across documents",
+      "outcome": "pass",
+      "detail": "2 document(s) carry Admission Date"
+    },
+    {
+      "rule_id": "SOP-04.R3",
+      "sop_id": "SOP-04",
+      "description": "Discharge Date agrees across documents",
+      "outcome": "not_applicable",
+      "detail": "1 document(s) carry Discharge Date"
+    },
+    {
+      "rule_id": "SOP-04.R2",
+      "sop_id": "SOP-04",
+      "description": "Procedure dates fall within the stay",
+      "outcome": "not_applicable",
+      "detail": "No dated procedure documented"
+    },
+    {
+      "rule_id": "SOP-05.R1",
+      "sop_id": "SOP-05",
+      "description": "Claimed procedure has its SOP-05 supporting report",
+      "outcome": "not_applicable",
+      "detail": "No procedure claimed"
+    },
+    {
+      "rule_id": "SOP-03.R1",
+      "sop_id": "SOP-03",
+      "description": "Claim diagnosis is consistent with the final documented diagnosis",
+      "outcome": "pass",
+      "detail": "Model verdict: equivalent (confidence 0.9). The claim diagnosis of peripheral vertigo matches the assessment documented in the attending physician note. No discharge summary was provided, so the physician note was used as the primary source."
+    }
+  ],
+  "uncertainties": [
+    "No Discharge Summary: the claim's discharge date and primary diagnosis cannot be cross-checked against a final clinical record.",
+    "Final diagnosis taken from the physician note because the discharge summary is missing."
+  ],
+  "documents_processed": [
+    {
+      "document_type": "Patient Registration Form",
+      "file": "patient_cases/CASE-002/01_registration_form.docx",
+      "sha256": "14614b4ab161060eae332eaa0f9552bb1601cf5db0f2d3d5eed2acc91100845d",
+      "field_count": 7,
+      "section_count": 1
+    },
+    {
+      "document_type": "Attending Physician Note",
+      "file": "patient_cases/CASE-002/02_attending_physician_note.docx",
+      "sha256": "442cca6c15757f38f19c306f4d5125a5696c35eb686f1bbf78439fe8e9637bc2",
+      "field_count": 5,
+      "section_count": 3
+    },
+    {
+      "document_type": "Claim Submission Form",
+      "file": "patient_cases/CASE-002/04_claim_submission_form.docx",
+      "sha256": "1f8840aef0242cc7e006ce77c27204cd24383d1655f09f7a2986ec56eef99aea",
+      "field_count": 11,
+      "section_count": 1
+    }
+  ],
+  "llm_calls": [
+    {
+      "step": "sop03_diagnosis_comparison",
+      "provider": "gemini",
+      "model": "gemini-3.1-flash-lite",
+      "cache_status": "miss",
+      "input_tokens": 745,
+      "output_tokens": 162,
+      "cost_usd": 0.000429,
+      "latency_ms": 14081,
+      "retries": 1,
+      "status": "ok",
+      "token_source": "provider_usage_metadata"
+    }
+  ],
+  "audit": {
+    "run_id": "2f61f13ea52a",
+    "case_id": "CASE-002",
+    "timestamp": "2026-10-02T05:41:14.171+00:00",
+    "run_label": "canonical-live",
+    "rule_set_version": "rules-2026.10.1",
+    "prompt_version": "sop03-diagnosis-v1",
+    "llm_mode": "live",
+    "llm_model": "gemini-3.1-flash-lite",
+    "sop_versions": {
+      "SOP-01": "sha256:5f85f4e1424f",
+      "SOP-02": "sha256:08fb85589c25",
+      "SOP-03": "sha256:4ac740a9971d",
+      "SOP-04": "sha256:21ba0ce0970d",
+      "SOP-05": "sha256:08e58ec82a10",
+      "SOP-06": "sha256:d2aa0cbd017d",
+      "SOP-07": "sha256:46a8df2a3eba"
+    },
+    "input_documents": [
+      {
+        "document_type": "Patient Registration Form",
+        "file": "patient_cases/CASE-002/01_registration_form.docx",
+        "sha256": "14614b4ab161060eae332eaa0f9552bb1601cf5db0f2d3d5eed2acc91100845d",
+        "field_count": 7,
+        "section_count": 1
+      },
+      {
+        "document_type": "Attending Physician Note",
+        "file": "patient_cases/CASE-002/02_attending_physician_note.docx",
+        "sha256": "442cca6c15757f38f19c306f4d5125a5696c35eb686f1bbf78439fe8e9637bc2",
+        "field_count": 5,
+        "section_count": 3
+      },
+      {
+        "document_type": "Claim Submission Form",
+        "file": "patient_cases/CASE-002/04_claim_submission_form.docx",
+        "sha256": "1f8840aef0242cc7e006ce77c27204cd24383d1655f09f7a2986ec56eef99aea",
+        "field_count": 11,
+        "section_count": 1
+      }
+    ]
+  },
+  "decision_boundary": "This assistant identifies issues and summarises evidence only. It does not approve, reject, or deny claims (SOP-06). 'no_issues_found' means no configured rule detected an issue; it is not an approval."
+}

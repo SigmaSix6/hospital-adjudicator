@@ -1,0 +1,138 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+ * Design tokens. Proposed palette inspired by Siloam's blue and yellow; these are NOT verified
+ * official brand values (see docs/ui-design-tokens.md for usage rules and contrast notes).
+ */
+:root {
+  --brand-blue: #1456a0;
+  --brand-blue-hover: #10457f;
+  --brand-blue-subtle: #eaf3fc;
+  --brand-navy: #16324f;
+  --brand-yellow: #f5c542;
+  --brand-yellow-subtle: #fff7d6;
+  --brand-teal: #168c8c;
+  --surface-page: #f7f9fc;
+  --surface-card: #ffffff;
+  --text-primary: #1d2939;
+  --text-secondary: #667085;
+  --border-default: #e4e7ec;
+  --status-success: #18794e;
+  --status-success-subtle: #ecfdf3;
+  --status-warning: #a15c00;
+  --status-warning-subtle: #fffaeb;
+  --status-error: #b42318;
+  --status-error-subtle: #fef3f2;
+  --status-info: #175cd3;
+  --status-info-subtle: #eff8ff;
+
+  /* shadcn semantic mapping */
+  --background: var(--surface-page);
+  --foreground: var(--text-primary);
+  --card: var(--surface-card);
+  --card-foreground: var(--text-primary);
+  --popover: var(--surface-card);
+  --popover-foreground: var(--text-primary);
+  --primary: var(--brand-blue);
+  --primary-foreground: #ffffff;
+  --secondary: var(--brand-blue-subtle);
+  --secondary-foreground: var(--brand-navy);
+  --muted: #f2f4f7;
+  --muted-foreground: var(--text-secondary);
+  --accent: var(--brand-blue-subtle);
+  --accent-foreground: var(--brand-navy);
+  --destructive: var(--status-error);
+  --border: var(--border-default);
+  --input: #8a94a6;
+  --ring: var(--brand-blue);
+  --radius: 0.75rem;
+  --chart-1: var(--brand-blue);
+  --chart-2: var(--brand-teal);
+  --chart-3: var(--brand-yellow);
+  --chart-4: var(--brand-navy);
+  --chart-5: var(--text-secondary);
+  --sidebar: var(--surface-card);
+  --sidebar-foreground: var(--text-primary);
+  --sidebar-primary: var(--brand-blue);
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: var(--brand-blue-subtle);
+  --sidebar-accent-foreground: var(--brand-navy);
+  --sidebar-border: var(--border-default);
+  --sidebar-ring: var(--brand-blue);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --font-heading: var(--font-geist-sans);
+  --color-brand-blue: var(--brand-blue);
+  --color-brand-blue-hover: var(--brand-blue-hover);
+  --color-brand-blue-subtle: var(--brand-blue-subtle);
+  --color-brand-navy: var(--brand-navy);
+  --color-brand-yellow: var(--brand-yellow);
+  --color-brand-yellow-subtle: var(--brand-yellow-subtle);
+  --color-brand-teal: var(--brand-teal);
+  --color-text-secondary: var(--text-secondary);
+  --color-success: var(--status-success);
+  --color-success-subtle: var(--status-success-subtle);
+  --color-warning: var(--status-warning);
+  --color-warning-subtle: var(--status-warning-subtle);
+  --color-error: var(--status-error);
+  --color-error-subtle: var(--status-error-subtle);
+  --color-info: var(--status-info);
+  --color-info-subtle: var(--status-info-subtle);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  html {
+    @apply font-sans;
+  }
+}

@@ -1,0 +1,308 @@
+{
+  "case_id": "CASE-004",
+  "run_id": "554e05c62837",
+  "status": "needs_review",
+  "summary": "Needs human review: 1 high, 0 medium, 1 low severity finding(s). Main issues: Patient ID mismatch across documents.",
+  "human_review_required": true,
+  "human_review_reasons": [
+    "[high] SOP-02.R1: Patient ID mismatch across documents"
+  ],
+  "findings": [
+    {
+      "finding_id": "CASE-004-F01",
+      "rule_id": "SOP-02.R1",
+      "category": "identity_mismatch",
+      "severity": "high",
+      "title": "Patient ID mismatch across documents",
+      "description": "Claim Submission Form has 'PT-0044', while 3 other document(s) have 'PT-0004'. SOP-02 requires Patient ID to match exactly; any mismatch is high severity.",
+      "policy_refs": [
+        {
+          "sop_id": "SOP-02",
+          "title": "Patient Identity Matching",
+          "section": "Exact identifiers",
+          "version": "sha256:08fb85589c25",
+          "excerpt": "Patient ID and date of birth must match across the case documents."
+        },
+        {
+          "sop_id": "SOP-02",
+          "title": "Patient Identity Matching",
+          "section": "Escalation",
+          "version": "sha256:08fb85589c25",
+          "excerpt": "Any Patient ID or DOB mismatch is a high-severity issue and requires human review."
+        }
+      ],
+      "evidence": [
+        {
+          "document_type": "Claim Submission Form",
+          "file": "patient_cases/CASE-004/04_claim_submission_form.docx",
+          "field": "Patient ID",
+          "value": "PT-0044",
+          "location": "table 1, row 2",
+          "note": null
+        },
+        {
+          "document_type": "Patient Registration Form",
+          "file": "patient_cases/CASE-004/01_registration_form.docx",
+          "field": "Patient ID",
+          "value": "PT-0004",
+          "location": "table 1, row 2",
+          "note": null
+        },
+        {
+          "document_type": "Attending Physician Note",
+          "file": "patient_cases/CASE-004/02_attending_physician_note.docx",
+          "field": "Patient ID",
+          "value": "PT-0004",
+          "location": "table 1, row 2",
+          "note": null
+        },
+        {
+          "document_type": "Discharge Summary",
+          "file": "patient_cases/CASE-004/03_discharge_summary.docx",
+          "field": "Patient ID",
+          "value": "PT-0004",
+          "location": "table 1, row 2",
+          "note": null
+        }
+      ],
+      "basis": "documented_fact",
+      "confidence": 1.0,
+      "requires_human_review": true
+    },
+    {
+      "finding_id": "CASE-004-F02",
+      "rule_id": "SOP-03.R3",
+      "category": "observation",
+      "severity": "low",
+      "title": "Working diagnosis was uncertain; final diagnosis confirmed",
+      "description": "The physician note records the diagnosis as uncertain, while the discharge summary records it as the final diagnosis and the claim matches it. Treated as normal diagnostic progression, not escalated (assumption A-03).",
+      "policy_refs": [
+        {
+          "sop_id": "SOP-03",
+          "title": "Diagnosis Consistency & Semantic Equivalence",
+          "section": "Uncertainty",
+          "version": "sha256:4ac740a9971d",
+          "excerpt": "A suspected, possible, rule-out, or not-confirmed diagnosis must not be treated as a confirmed diagnosis. If a claim asserts a confirmed diagnosis while the clinical record remains uncertain, escalate for human review."
+        },
+        {
+          "sop_id": "SOP-03",
+          "title": "Diagnosis Consistency & Semantic Equivalence",
+          "section": "AI behavior",
+          "version": "sha256:4ac740a9971d",
+          "excerpt": "The assistant should cite the documents used to make the comparison and should not silently rewrite diagnoses."
+        }
+      ],
+      "evidence": [
+        {
+          "document_type": "Claim Submission Form",
+          "file": "patient_cases/CASE-004/04_claim_submission_form.docx",
+          "field": "Primary Diagnosis",
+          "value": "Stable angina",
+          "location": "table 1, row 7",
+          "note": "Quoted by the model and verified against the document"
+        },
+        {
+          "document_type": "Discharge Summary",
+          "file": "patient_cases/CASE-004/03_discharge_summary.docx",
+          "field": "Primary Diagnosis",
+          "value": "Stable angina",
+          "location": "table 1, row 8",
+          "note": "Quoted by the model and verified against the document"
+        },
+        {
+          "document_type": "Attending Physician Note",
+          "file": "patient_cases/CASE-004/02_attending_physician_note.docx",
+          "field": "Assessment",
+          "value": "Stable angina suspected; cardiac enzymes negative.",
+          "location": "section 'Assessment'",
+          "note": "Quoted by the model and verified against the document"
+        }
+      ],
+      "basis": "model_judgment",
+      "confidence": 1.0,
+      "requires_human_review": false
+    }
+  ],
+  "checks": [
+    {
+      "rule_id": "SOP-01.R1",
+      "sop_id": "SOP-01",
+      "description": "All four core documents are present",
+      "outcome": "pass",
+      "detail": "Registration, physician note, discharge summary and claim present"
+    },
+    {
+      "rule_id": "SOP-01.R2",
+      "sop_id": "SOP-01",
+      "description": "Required claim fields are filled",
+      "outcome": "pass",
+      "detail": "8 required fields present"
+    },
+    {
+      "rule_id": "SOP-02.R1",
+      "sop_id": "SOP-02",
+      "description": "Patient ID matches across documents",
+      "outcome": "issue",
+      "detail": "Claim Submission Form has 'PT-0044'"
+    },
+    {
+      "rule_id": "SOP-02.R2",
+      "sop_id": "SOP-02",
+      "description": "Date of Birth matches across documents",
+      "outcome": "pass",
+      "detail": "Same Date of Birth on 3 documents"
+    },
+    {
+      "rule_id": "SOP-02.R4",
+      "sop_id": "SOP-02",
+      "description": "Document Case IDs match the manifest",
+      "outcome": "pass",
+      "detail": "4 documents labelled CASE-004"
+    },
+    {
+      "rule_id": "SOP-02.R3",
+      "sop_id": "SOP-02",
+      "description": "Patient names agree after normalisation",
+      "outcome": "pass",
+      "detail": "4 name values, 1 distinct after normalisation"
+    },
+    {
+      "rule_id": "SOP-04.R1",
+      "sop_id": "SOP-04",
+      "description": "Discharge date is on or after admission date",
+      "outcome": "pass",
+      "detail": "2 document(s) with both dates checked"
+    },
+    {
+      "rule_id": "SOP-04.R3",
+      "sop_id": "SOP-04",
+      "description": "Admission Date agrees across documents",
+      "outcome": "pass",
+      "detail": "3 document(s) carry Admission Date"
+    },
+    {
+      "rule_id": "SOP-04.R3",
+      "sop_id": "SOP-04",
+      "description": "Discharge Date agrees across documents",
+      "outcome": "pass",
+      "detail": "2 document(s) carry Discharge Date"
+    },
+    {
+      "rule_id": "SOP-04.R2",
+      "sop_id": "SOP-04",
+      "description": "Procedure dates fall within the stay",
+      "outcome": "not_applicable",
+      "detail": "No dated procedure documented"
+    },
+    {
+      "rule_id": "SOP-05.R1",
+      "sop_id": "SOP-05",
+      "description": "Claimed procedure has its SOP-05 supporting report",
+      "outcome": "not_applicable",
+      "detail": "No procedure claimed"
+    },
+    {
+      "rule_id": "SOP-03.R1",
+      "sop_id": "SOP-03",
+      "description": "Claim diagnosis is consistent with the final documented diagnosis",
+      "outcome": "pass",
+      "detail": "Model verdict: equivalent (confidence 1.0). The claim diagnosis matches the primary diagnosis documented in the discharge summary. While the physician note initially listed the condition as suspected, the final discharge summary confirms the diagnosis."
+    }
+  ],
+  "uncertainties": [],
+  "documents_processed": [
+    {
+      "document_type": "Patient Registration Form",
+      "file": "patient_cases/CASE-004/01_registration_form.docx",
+      "sha256": "53a4956f569dd953a2f9f44926e85100dd6d976f4276f57a456d65459a7990dc",
+      "field_count": 7,
+      "section_count": 1
+    },
+    {
+      "document_type": "Attending Physician Note",
+      "file": "patient_cases/CASE-004/02_attending_physician_note.docx",
+      "sha256": "27a351dcc936636b97b80f6baee340374f54e35ccfa7707854d1eef458700fd9",
+      "field_count": 5,
+      "section_count": 3
+    },
+    {
+      "document_type": "Discharge Summary",
+      "file": "patient_cases/CASE-004/03_discharge_summary.docx",
+      "sha256": "e4cd0ae23bef94c34cd4b940a41cc1ea382ac4b9928b519e93614ad6207359aa",
+      "field_count": 8,
+      "section_count": 2
+    },
+    {
+      "document_type": "Claim Submission Form",
+      "file": "patient_cases/CASE-004/04_claim_submission_form.docx",
+      "sha256": "d4b2cf5aa07c89923eb5b237caa3e84ebc29bc655aa24d0cdfbadc9fea09c8b4",
+      "field_count": 11,
+      "section_count": 1
+    }
+  ],
+  "llm_calls": [
+    {
+      "step": "sop03_diagnosis_comparison",
+      "provider": "gemini",
+      "model": "gemini-3.1-flash-lite",
+      "cache_status": "miss",
+      "input_tokens": 759,
+      "output_tokens": 186,
+      "cost_usd": 0.000469,
+      "latency_ms": 2968,
+      "retries": 0,
+      "status": "ok",
+      "token_source": "provider_usage_metadata"
+    }
+  ],
+  "audit": {
+    "run_id": "554e05c62837",
+    "case_id": "CASE-004",
+    "timestamp": "2026-10-02T05:41:17.287+00:00",
+    "run_label": "canonical-live",
+    "rule_set_version": "rules-2026.10.1",
+    "prompt_version": "sop03-diagnosis-v1",
+    "llm_mode": "live",
+    "llm_model": "gemini-3.1-flash-lite",
+    "sop_versions": {
+      "SOP-01": "sha256:5f85f4e1424f",
+      "SOP-02": "sha256:08fb85589c25",
+      "SOP-03": "sha256:4ac740a9971d",
+      "SOP-04": "sha256:21ba0ce0970d",
+      "SOP-05": "sha256:08e58ec82a10",
+      "SOP-06": "sha256:d2aa0cbd017d",
+      "SOP-07": "sha256:46a8df2a3eba"
+    },
+    "input_documents": [
+      {
+        "document_type": "Patient Registration Form",
+        "file": "patient_cases/CASE-004/01_registration_form.docx",
+        "sha256": "53a4956f569dd953a2f9f44926e85100dd6d976f4276f57a456d65459a7990dc",
+        "field_count": 7,
+        "section_count": 1
+      },
+      {
+        "document_type": "Attending Physician Note",
+        "file": "patient_cases/CASE-004/02_attending_physician_note.docx",
+        "sha256": "27a351dcc936636b97b80f6baee340374f54e35ccfa7707854d1eef458700fd9",
+        "field_count": 5,
+        "section_count": 3
+      },
+      {
+        "document_type": "Discharge Summary",
+        "file": "patient_cases/CASE-004/03_discharge_summary.docx",
+        "sha256": "e4cd0ae23bef94c34cd4b940a41cc1ea382ac4b9928b519e93614ad6207359aa",
+        "field_count": 8,
+        "section_count": 2
+      },
+      {
+        "document_type": "Claim Submission Form",
+        "file": "patient_cases/CASE-004/04_claim_submission_form.docx",
+        "sha256": "d4b2cf5aa07c89923eb5b237caa3e84ebc29bc655aa24d0cdfbadc9fea09c8b4",
+        "field_count": 11,
+        "section_count": 1
+      }
+    ]
+  },
+  "decision_boundary": "This assistant identifies issues and summarises evidence only. It does not approve, reject, or deny claims (SOP-06). 'no_issues_found' means no configured rule detected an issue; it is not an approval."
+}
