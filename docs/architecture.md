@@ -8,13 +8,14 @@ flowchart LR
     S[Claims / workflow system] -->|REST + JSON| API
     UI -->|/api proxy| API[Case Review API<br/>FastAPI :8741]
     API --> D[(Case bundle store<br/>manifest + .docx)]
-    API --> P[(SOP registry<br/>SOP-01..07 .docx)]
+    API --> P[(SOP registry<br/>policies_sops/sops.json)]
     API -->|diagnosis text only| G[[Google Gemini API]]
     API --> L[(Logs: app, LLM calls, audit<br/>+ stored review JSON)]
 ```
 
 - **Inputs:** a case ID. The manifest (`data/case_manifest.csv`) decides which documents belong to
-  the case. SOPs are loaded from `data/policies_sops/`.
+  the case. SOPs are loaded from `data/policies_sops/sops.json` (original `.docx` files kept for
+  documentation).
 - **Output:** a `ReviewResult` JSON with status, findings, checks, evidence, policy references,
   uncertainties, LLM usage and an audit record.
 - **Trust boundaries:** (1) document text is untrusted input: it is parsed, never executed, and
@@ -81,14 +82,15 @@ flowchart TB
 | `GET /health` | Version, default LLM mode, whether Gemini is configured, rule set and prompt versions |
 | `GET /cases` | Cases from the manifest with document types, missing core documents, latest review status |
 | `GET /cases/{case_id}` | Parsed documents (fields and sections with locations and hashes) |
-| `POST /cases/{case_id}/review` | Run a review. Query: `llm_mode=live\|mock` (optional), `use_cache=true\|false`, `run_label` |
+| `POST /cases/{case_id}/review` | Run a review. Query: `llm_mode=live\|mock` (optional), `use_cache=true\|false`, `run_label`. Live requires `REVIEW_API_KEY` (`X-API-Key`). |
 | `GET /cases/{case_id}/reviews/latest` | Last stored result |
-| `POST /reviews/batch` | Review every case (same query parameters) |
+| `POST /reviews/batch` | Review every case (same query parameters). Always requires `REVIEW_API_KEY`; live batch also needs `ALLOW_LIVE_BATCH=true`. |
 | `GET /policies` | SOP registry with versions |
-| `GET /llm-calls` | Recent call-log rows and totals |
+| `GET /llm-calls` | Recent call-log rows and totals (requires `X-API-Key` when `REVIEW_API_KEY` is set) |
 
-Errors: `404` for an unknown case ID; `400` when `llm_mode=live` is requested without a key;
-`422` for invalid parameters. LLM failures never cause a 5xx. They become a finding.
+Errors: `404` for an unknown case ID; `400` when `llm_mode=live` is requested without `GEMINI_API_KEY`;
+`401`/`403` for missing API key or disabled live batch; `429` when live rate/concurrency/daily budget
+limits are hit; `422` for invalid parameters. LLM failures never cause a 5xx. They become a finding.
 
 Response (abridged; full schema at `/docs`):
 
@@ -125,7 +127,7 @@ Full live outputs for all 10 cases are in `docs/evidence/reviews/`.
 |---|---|---|---|
 | Manifest loader | `ingestion.py` | Lists the documents for a case. Files on disk but not in the manifest are ignored. | Unknown case leads to 404. A listed file that is missing or unparseable becomes a SOP-01 finding, not a crash. |
 | DOCX parser | `ingestion.py` | Extracts table rows as fields and Heading-2 blocks as sections. Keeps empty sections (a blank Impression is evidence). Records the location and file sha256. | Per-file errors are isolated (see above). Parsing is cached by content hash. |
-| SOP registry | `sops.py` | Loads SOP sections. Version = content hash. Builds `PolicyRef` with the verbatim excerpt. | A missing SOP section raises at startup/test time, not silently. |
+| SOP registry | `sops.py` | Loads SOP sections from `policies_sops/sops.json`. Version = content hash. Builds `PolicyRef` with the verbatim excerpt. | A missing SOP section raises at startup/test time, not silently. |
 | Normalisers | `normalize.py` | Dates (several formats), IDs, names (titles/punctuation), blanks, uncertainty markers. | Unparseable dates make the check `undetermined` and add an uncertainty. |
 | Deterministic rules | `rules.py` | SOP-01, 02, 04, 05. Each returns findings and `CheckResult`s. | Pure functions; no I/O. |
 | Diagnosis step | `diagnosis.py` | SOP-03 gate, prompt, cache, retries, guards, and mapping of the verdict to findings. | Any failure becomes a SOP-06.R1 `undetermined` finding, so the case is `needs_review`. |
@@ -249,5 +251,5 @@ baked into the image. Review state is kept in a named volume.
 | Policies | Versioned policy store, hybrid retrieval, policy-change re-evaluation. | 7 short SOPs fit in a prompt. |
 | Human loop | Reviewer decision capture, override reasons, a feedback dataset, an online override-rate metric. | Needs a workflow owner. |
 | Quality | Clinician-labelled set, adversarial cases (injection, near-miss IDs, OCR noise), shadow mode, drift monitoring, regression gate in CI. | Time box. The eval harness is the seed. |
-| Security | AuthN/Z, tenant isolation, encryption, PHI-safe logging policy, DPA'd model endpoint, secret manager. | Synthetic data, single-user demo. |
+| Security | Full AuthN/Z, tenant isolation, encryption, PHI-safe logging policy, DPA'd model endpoint, secret manager. Demo ships a shared `REVIEW_API_KEY`, live rate/budget caps, and live-batch opt-in to limit cost/DoS. | Synthetic data, single-user demo. |
 | Scale | Async job queue for batch reviews, idempotency keys, Postgres for reviews/audit, provider batch API for back-office runs (50% cheaper). | Synchronous calls finish in seconds here. |

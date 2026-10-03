@@ -4,13 +4,19 @@ from __future__ import annotations
 
 from typing import Literal
 
-from fastapi import FastAPI, HTTPException, Query
+from fastapi import FastAPI, HTTPException, Query, Request
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
 from . import __version__
 from .config import PRICING_SOURCE, PROMPT_VERSION, RULE_SET_VERSION, get_settings
 from .ingestion import CaseNotFoundError, list_case_ids, load_case, load_manifest
+from .live_guard import (
+    live_spend_guard,
+    require_api_key,
+    require_api_key_if_configured,
+    resolve_llm_mode,
+)
 from .llm.calllog import read_jsonl
 from .models import ManifestEntry, ParsedDocument, ReviewResult, Sop
 from .pipeline import configure_logging, latest_review, review_case
@@ -25,7 +31,8 @@ app = FastAPI(
     version=__version__,
     description=(
         "Reviews one synthetic patient case at a time against hospital SOPs and returns structured "
-        "findings with evidence. It never approves, rejects, or denies a claim (SOP-06)."
+        "findings with evidence. It never approves, rejects, or denies a claim (SOP-06). "
+        "Live LLM and batch endpoints require REVIEW_API_KEY (X-API-Key)."
     ),
 )
 app.add_middleware(
@@ -41,6 +48,8 @@ class Health(BaseModel):
     default_llm_mode: str
     gemini_configured: bool
     gemini_model: str
+    review_api_key_configured: bool
+    allow_live_batch: bool
     rule_set_version: str
     prompt_version: str
 
@@ -82,28 +91,45 @@ class LlmCallsResponse(BaseModel):
 
 
 def _case_or_404(case_id: str):
+    s = get_settings()
     try:
-        return load_case(settings.data_dir, case_id.upper())
+        return load_case(s.data_dir, case_id.upper())
     except CaseNotFoundError:
         raise HTTPException(status_code=404, detail=f"Unknown case_id '{case_id}'. See GET /cases.")
 
 
+def _ensure_live_possible(mode: str, s) -> None:
+    if mode == "live" and not s.gemini_configured:
+        raise HTTPException(
+            status_code=400,
+            detail="llm_mode=live requested but GEMINI_API_KEY is not set. Use llm_mode=mock.",
+        )
+
+
 @app.get("/health", response_model=Health)
 def health() -> Health:
+    s = get_settings()
     return Health(
-        status="ok", version=__version__, default_llm_mode=settings.effective_llm_mode,
-        gemini_configured=settings.gemini_configured, gemini_model=settings.gemini_model,
-        rule_set_version=RULE_SET_VERSION, prompt_version=PROMPT_VERSION,
+        status="ok",
+        version=__version__,
+        default_llm_mode=s.effective_llm_mode,
+        gemini_configured=s.gemini_configured,
+        gemini_model=s.gemini_model,
+        review_api_key_configured=s.review_api_key_configured,
+        allow_live_batch=s.allow_live_batch,
+        rule_set_version=RULE_SET_VERSION,
+        prompt_version=PROMPT_VERSION,
     )
 
 
 @app.get("/cases", response_model=list[CaseListItem])
 def list_cases() -> list[CaseListItem]:
-    manifest = load_manifest(settings.data_dir)
+    s = get_settings()
+    manifest = load_manifest(s.data_dir)
     items = []
-    for case_id in list_case_ids(settings.data_dir):
+    for case_id in list_case_ids(s.data_dir):
         types = [e.document_type for e in manifest if e.case_id == case_id]
-        latest = latest_review(case_id, settings)
+        latest = latest_review(case_id, s)
         items.append(CaseListItem(
             case_id=case_id, document_types=types, document_count=len(types),
             missing_core_documents=[t for t in REQUIRED_DOCUMENTS if t not in types],
@@ -126,20 +152,34 @@ def get_case(case_id: str) -> CaseDetail:
 @app.post("/cases/{case_id}/review", response_model=ReviewResult)
 def review(
     case_id: str,
-    llm_mode: LlmMode | None = Query(None, description="Override the default LLM mode. 'live' needs GEMINI_API_KEY."),
+    request: Request,
+    llm_mode: LlmMode | None = Query(None, description="Override the default LLM mode. 'live' needs GEMINI_API_KEY and REVIEW_API_KEY."),
     use_cache: bool = Query(True, description="Reuse cached LLM responses for identical prompts"),
     run_label: str = Query("adhoc", max_length=64, pattern=r"^[A-Za-z0-9_.-]+$"),
 ) -> ReviewResult:
+    s = get_settings()
     _case_or_404(case_id)
-    if llm_mode == "live" and not settings.gemini_configured:
-        raise HTTPException(status_code=400, detail="llm_mode=live requested but GEMINI_API_KEY is not set. Use llm_mode=mock.")
-    return review_case(case_id.upper(), llm_mode=llm_mode, use_cache=use_cache, run_label=run_label, settings=settings)
+    mode = resolve_llm_mode(llm_mode, s)
+    _ensure_live_possible(mode, s)
+
+    if mode == "live":
+        require_api_key(request, s, purpose="Live LLM reviews")
+        with live_spend_guard.live_slot(s):
+            return review_case(
+                case_id.upper(), llm_mode=llm_mode, use_cache=use_cache, run_label=run_label, settings=s
+            )
+
+    require_api_key_if_configured(request, s)
+    return review_case(
+        case_id.upper(), llm_mode=llm_mode, use_cache=use_cache, run_label=run_label, settings=s
+    )
 
 
 @app.get("/cases/{case_id}/reviews/latest", response_model=ReviewResult)
 def get_latest(case_id: str) -> ReviewResult:
+    s = get_settings()
     _case_or_404(case_id)
-    result = latest_review(case_id.upper(), settings)
+    result = latest_review(case_id.upper(), s)
     if result is None:
         raise HTTPException(status_code=404, detail="This case has not been reviewed yet.")
     return result
@@ -147,17 +187,43 @@ def get_latest(case_id: str) -> ReviewResult:
 
 @app.post("/reviews/batch", response_model=list[BatchItem])
 def review_all(
+    request: Request,
     llm_mode: LlmMode | None = Query(None),
     use_cache: bool = Query(True),
     run_label: str = Query("batch", max_length=64, pattern=r"^[A-Za-z0-9_.-]+$"),
 ) -> list[BatchItem]:
-    if llm_mode == "live" and not settings.gemini_configured:
-        raise HTTPException(status_code=400, detail="llm_mode=live requested but GEMINI_API_KEY is not set.")
+    s = get_settings()
+    require_api_key(request, s, purpose="Batch reviews")
+    mode = resolve_llm_mode(llm_mode, s)
+    _ensure_live_possible(mode, s)
+    case_ids = list_case_ids(s.data_dir)
+
+    if mode == "live":
+        if not s.allow_live_batch:
+            raise HTTPException(
+                status_code=403,
+                detail=(
+                    "Live batch reviews are disabled. Set ALLOW_LIVE_BATCH=true, "
+                    "or review cases individually via POST /cases/{id}/review."
+                ),
+            )
+        live_spend_guard.reserve(s, n=max(len(case_ids), 1))
+
     out = []
-    for case_id in list_case_ids(settings.data_dir):
+    for case_id in case_ids:
         try:
-            r = review_case(case_id, llm_mode=llm_mode, use_cache=use_cache, run_label=run_label, settings=settings)
+            if mode == "live":
+                with live_spend_guard.live_slot(s, reserved=True):
+                    r = review_case(
+                        case_id, llm_mode=llm_mode, use_cache=use_cache, run_label=run_label, settings=s
+                    )
+            else:
+                r = review_case(
+                    case_id, llm_mode=llm_mode, use_cache=use_cache, run_label=run_label, settings=s
+                )
             out.append(BatchItem(case_id=case_id, status=r.status, run_id=r.run_id, findings=len(r.findings)))
+        except HTTPException:
+            raise
         except Exception as exc:  # one bad case must not abort the batch
             out.append(BatchItem(case_id=case_id, status=None, run_id=None, findings=0, error=type(exc).__name__))
     return out
@@ -165,12 +231,14 @@ def review_all(
 
 @app.get("/policies", response_model=list[Sop])
 def policies() -> list[Sop]:
-    return list(load_sops(settings.data_dir).values())
+    return list(load_sops(get_settings().data_dir).values())
 
 
 @app.get("/llm-calls", response_model=LlmCallsResponse)
-def llm_calls(limit: int = Query(200, ge=1, le=5000)) -> LlmCallsResponse:
-    rows = read_jsonl(settings.llm_call_log)
+def llm_calls(request: Request, limit: int = Query(200, ge=1, le=5000)) -> LlmCallsResponse:
+    s = get_settings()
+    require_api_key_if_configured(request, s)
+    rows = read_jsonl(s.llm_call_log)
     return LlmCallsResponse(
         pricing_source=PRICING_SOURCE, calls=rows[-limit:][::-1], total_calls=len(rows),
         total_input_tokens=sum(r.get("input_tokens", 0) for r in rows),

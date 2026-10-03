@@ -46,10 +46,20 @@ class Settings:
     llm_min_confidence: float
     cache_enabled: bool
     cors_origins: tuple[str, ...]
+    review_api_key: str | None
+    allow_live_batch: bool
+    llm_daily_budget_usd: float
+    llm_max_concurrent_live: int
+    llm_live_per_minute: int
+    llm_live_per_hour: int
 
     @property
     def gemini_configured(self) -> bool:
         return bool(self.gemini_api_key)
+
+    @property
+    def review_api_key_configured(self) -> bool:
+        return bool(self.review_api_key)
 
     @property
     def effective_llm_mode(self) -> str:
@@ -81,13 +91,21 @@ class Settings:
         return self.var_dir / "reviews"
 
 
+def _optional_secret(name: str) -> str | None:
+    raw = os.getenv(name)
+    if raw is None:
+        return None
+    value = raw.strip()
+    return value or None
+
+
 @lru_cache
 def get_settings() -> Settings:
     return Settings(
         data_dir=Path(os.getenv("DATA_DIR", PROJECT_ROOT / "data")),
         var_dir=Path(os.getenv("VAR_DIR", PROJECT_ROOT / "var")),
         llm_mode=os.getenv("LLM_MODE", "live").strip().lower(),
-        gemini_api_key=os.getenv("GEMINI_API_KEY") or None,
+        gemini_api_key=_optional_secret("GEMINI_API_KEY"),
         gemini_model=os.getenv("GEMINI_MODEL", "gemini-3.1-flash-lite"),
         gemini_thinking_level=os.getenv("GEMINI_THINKING_LEVEL", "minimal"),
         llm_timeout_s=float(os.getenv("LLM_TIMEOUT_S", "10")),
@@ -101,4 +119,10 @@ def get_settings() -> Settings:
             ).split(",")
             if o.strip()
         ),
+        review_api_key=_optional_secret("REVIEW_API_KEY"),
+        allow_live_batch=_bool("ALLOW_LIVE_BATCH", False),
+        llm_daily_budget_usd=float(os.getenv("LLM_DAILY_BUDGET_USD", "1.0")),
+        llm_max_concurrent_live=int(os.getenv("LLM_MAX_CONCURRENT_LIVE", "2")),
+        llm_live_per_minute=int(os.getenv("LLM_LIVE_PER_MINUTE", "5")),
+        llm_live_per_hour=int(os.getenv("LLM_LIVE_PER_HOUR", "30")),
     )

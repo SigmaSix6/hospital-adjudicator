@@ -56,7 +56,7 @@ All 10 cases ran through the API (and again through the UI) against Gemini.
 ### Option A: Docker (API + UI)
 
 ```bash
-cp .env.example .env          # optional: add GEMINI_API_KEY; without it the mock is used
+cp .env.example .env          # set GEMINI_API_KEY and REVIEW_API_KEY; without Gemini the mock is used
 docker compose up --build
 ```
 
@@ -71,26 +71,37 @@ Requires Python 3.11+ and Node 20+.
 # API
 python3 -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt && pip install -e .
-cp .env.example .env          # optional: add GEMINI_API_KEY
+cp .env.example .env          # set GEMINI_API_KEY and REVIEW_API_KEY
 uvicorn review_assistant.api:app --port 8741
 
-# UI (second terminal)
-cd ui && npm install && npm run dev      # http://localhost:3417, proxies /api/* to API_BASE_URL (default http://127.0.0.1:8741)
+# UI (second terminal; forward the same REVIEW_API_KEY into the Next process)
+cd ui && npm install
+# PowerShell: $env:REVIEW_API_KEY="change-me-local-dev"; npm run dev
+# bash: REVIEW_API_KEY=change-me-local-dev npm run dev
+# Or put REVIEW_API_KEY / API_BASE_URL in ui/.env.local
+npm run dev      # http://localhost:3417, proxies /api/* to API_BASE_URL (default http://127.0.0.1:8741)
 ```
 
 ### Run the supplied cases through the API
 
+Live LLM and batch require `REVIEW_API_KEY` (`X-API-Key`). Mock single-case review works without a
+key only when `REVIEW_API_KEY` is unset. Live batch also needs `ALLOW_LIVE_BATCH=true`.
+
 ```bash
+export REVIEW_API_KEY=change-me-local-dev   # same value as in .env
 curl -s localhost:8741/cases | jq '.[].case_id'
-curl -s -X POST "localhost:8741/cases/CASE-010/review" | jq '{status, human_review_reasons}'
-curl -s -X POST "localhost:8741/cases/CASE-006/review?llm_mode=mock" | jq '.status'
-curl -s -X POST "localhost:8741/reviews/batch?llm_mode=live&use_cache=false"     # all 10 cases
+curl -s -X POST "localhost:8741/cases/CASE-010/review" -H "X-API-Key: $REVIEW_API_KEY" \
+  | jq '{status, human_review_reasons}'
+curl -s -X POST "localhost:8741/cases/CASE-006/review?llm_mode=mock" -H "X-API-Key: $REVIEW_API_KEY" \
+  | jq '.status'
+curl -s -X POST "localhost:8741/reviews/batch?llm_mode=live&use_cache=false" \
+  -H "X-API-Key: $REVIEW_API_KEY"     # needs ALLOW_LIVE_BATCH=true
 
 python scripts/run_cases_via_api.py --llm-mode live --run-label my-run --out-dir outputs
 ```
 
-Query parameters on `POST /cases/{id}/review`: `llm_mode=live|mock` (default: live if a key is
-set, otherwise mock), `use_cache=true|false`, `run_label` (tags rows in the call log).
+Query parameters on `POST /cases/{id}/review`: `llm_mode=live|mock` (default: live if Gemini is
+configured, otherwise mock), `use_cache=true|false`, `run_label` (tags rows in the call log).
 
 ### CLI helper
 
@@ -115,7 +126,12 @@ mock comparison).
 | Variable | Default | Notes |
 |---|---|---|
 | `GEMINI_API_KEY` | (empty) | Only in `.env` (gitignored) or the environment. Empty means mock mode. |
-| `LLM_MODE` | `live` | `live` falls back to `mock` when no key is set. Per-request override via `llm_mode`. |
+| `REVIEW_API_KEY` | (empty) | Required for live LLM over HTTP and for batch. UI proxy forwards it as `X-API-Key`. |
+| `ALLOW_LIVE_BATCH` | `false` | Opt-in for `POST /reviews/batch` with `llm_mode=live`. |
+| `LLM_DAILY_BUDGET_USD` | `1.0` | Rejects new live calls when today's log spend reaches this (UTC day). |
+| `LLM_MAX_CONCURRENT_LIVE` | `2` | Max in-flight live reviews. |
+| `LLM_LIVE_PER_MINUTE` / `LLM_LIVE_PER_HOUR` | `5` / `30` | Live review rate limits (429 when exceeded). |
+| `LLM_MODE` | `live` | `live` falls back to `mock` when no Gemini key is set. Per-request override via `llm_mode`. |
 | `GEMINI_MODEL` | `gemini-3.1-flash-lite` | Pricing table in `src/review_assistant/config.py` |
 | `GEMINI_THINKING_LEVEL` | `minimal` | |
 | `LLM_TIMEOUT_S` / `LLM_MAX_RETRIES` | `10` / `3` | Per attempt; backoff 1, 2, 4 s |
@@ -133,6 +149,7 @@ versions, outcome). Each result is also stored at `var/reviews/<case>/<run_id>.j
 ```text
 src/review_assistant/
   api.py          FastAPI endpoints
+  live_guard.py   API key, live rate/concurrency/budget gates
   pipeline.py     orchestrator + SOP-06 decision assembly, audit and event logging
   ingestion.py    manifest loader, python-docx parser with provenance
   rules.py        deterministic SOP-01/02/04/05 rules

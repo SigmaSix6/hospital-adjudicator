@@ -13,6 +13,9 @@ services:
     build: ./ui
     ports:
       - "3417:3417"
+    env_file:
+      - path: .env
+        required: false
     environment:
       API_BASE_URL: http://api:8741
     depends_on:

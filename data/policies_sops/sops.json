@@ -1,0 +1,179 @@
+[
+  {
+    "sop_id": "SOP-01",
+    "title": "Required Document Completeness",
+    "source_docx": "policies_sops/SOP-01_required_document_completeness.docx",
+    "sections": [
+      {
+        "heading": "Purpose",
+        "text": "Define the minimum document set and core fields required for a patient case review."
+      },
+      {
+        "heading": "Required documents",
+        "text": "Every case must contain: (1) Patient Registration Form, (2) Attending Physician Note, (3) Discharge Summary, and (4) Claim Submission Form."
+      },
+      {
+        "heading": "Required claim fields",
+        "text": "The Claim Submission Form must include patient identity, admission date, discharge date, primary diagnosis, attending physician, and physician signature."
+      },
+      {
+        "heading": "Procedure-specific support",
+        "text": "If the claim includes a procedure listed in SOP-05, the corresponding supporting report is also required."
+      },
+      {
+        "heading": "Review action",
+        "text": "A missing required core document, required claim field, or required procedure-support document must be flagged for review. Do not infer missing content from another document."
+      }
+    ]
+  },
+  {
+    "sop_id": "SOP-02",
+    "title": "Patient Identity Matching",
+    "source_docx": "policies_sops/SOP-02_patient_identity_matching.docx",
+    "sections": [
+      {
+        "heading": "Purpose",
+        "text": "Ensure all documents belong to the same patient."
+      },
+      {
+        "heading": "Exact identifiers",
+        "text": "Patient ID and date of birth must match across the case documents."
+      },
+      {
+        "heading": "Names",
+        "text": "Names may be normalized for case, spacing, punctuation, and common title differences. A name difference alone should not automatically be treated as a mismatch if Patient ID and DOB agree."
+      },
+      {
+        "heading": "Escalation",
+        "text": "Any Patient ID or DOB mismatch is a high-severity issue and requires human review."
+      }
+    ]
+  },
+  {
+    "sop_id": "SOP-03",
+    "title": "Diagnosis Consistency & Semantic Equivalence",
+    "source_docx": "policies_sops/SOP-03_diagnosis_consistency.docx",
+    "sections": [
+      {
+        "heading": "Purpose",
+        "text": "Guide comparison of diagnoses across physician notes, discharge summaries, and claim forms."
+      },
+      {
+        "heading": "Semantic equivalence",
+        "text": "Equivalent terminology and standard abbreviations should not be flagged as conflicts. Example: “Type 2 diabetes mellitus without complications” and “T2DM, uncomplicated” are equivalent for this review."
+      },
+      {
+        "heading": "True conflict",
+        "text": "Different clinical conditions should be flagged when the claim diagnosis contradicts the final documented diagnosis. Example: “Pneumonia” and “Acute bronchitis” are not treated as equivalent."
+      },
+      {
+        "heading": "Uncertainty",
+        "text": "A suspected, possible, rule-out, or not-confirmed diagnosis must not be treated as a confirmed diagnosis. If a claim asserts a confirmed diagnosis while the clinical record remains uncertain, escalate for human review."
+      },
+      {
+        "heading": "AI behavior",
+        "text": "The assistant should cite the documents used to make the comparison and should not silently rewrite diagnoses."
+      }
+    ]
+  },
+  {
+    "sop_id": "SOP-04",
+    "title": "Admission, Discharge & Procedure Date Validation",
+    "source_docx": "policies_sops/SOP-04_date_validation.docx",
+    "sections": [
+      {
+        "heading": "Purpose",
+        "text": "Validate basic chronological consistency."
+      },
+      {
+        "heading": "Admission/discharge rule",
+        "text": "Discharge date must be the same as or later than the admission date."
+      },
+      {
+        "heading": "Procedure date rule",
+        "text": "Any procedure date must fall within the documented admission-to-discharge period unless a supporting note explicitly explains otherwise."
+      },
+      {
+        "heading": "Severity",
+        "text": "A discharge date before admission is a high-severity issue and requires review."
+      }
+    ]
+  },
+  {
+    "sop_id": "SOP-05",
+    "title": "Procedure Supporting Documentation",
+    "source_docx": "policies_sops/SOP-05_procedure_supporting_documents.docx",
+    "sections": [
+      {
+        "heading": "Purpose",
+        "text": "Define required evidence for selected procedures."
+      },
+      {
+        "heading": "Colonoscopy",
+        "text": "Requires an Endoscopy Report documenting procedure date, findings, and conclusion/impression."
+      },
+      {
+        "heading": "CT abdomen with contrast",
+        "text": "Requires a Radiology Report containing at least Study Date, Findings, and Impression."
+      },
+      {
+        "heading": "Appendectomy",
+        "text": "Requires an Operative Report containing procedure date, operative findings, and surgeon identification."
+      },
+      {
+        "heading": "Missing report",
+        "text": "If a required procedure report is absent, flag as high severity."
+      },
+      {
+        "heading": "Incomplete report",
+        "text": "If a required report exists but a required section is blank or clearly incomplete, flag for human review. Do not invent the missing section."
+      }
+    ]
+  },
+  {
+    "sop_id": "SOP-06",
+    "title": "Human Review Escalation & AI Limits",
+    "source_docx": "policies_sops/SOP-06_human_review_and_ai_limits.docx",
+    "sections": [
+      {
+        "heading": "Purpose",
+        "text": "Define when the AI assistant must defer to a human reviewer."
+      },
+      {
+        "heading": "Mandatory escalation",
+        "text": "Escalate when there is conflicting clinical evidence, uncertain diagnosis status, incomplete supporting evidence, identity mismatch, or a rule outcome cannot be determined confidently."
+      },
+      {
+        "heading": "Decision boundary",
+        "text": "The AI assistant may identify issues and summarize evidence. It must not autonomously approve, reject, or deny a claim."
+      },
+      {
+        "heading": "Uncertainty",
+        "text": "When evidence is insufficient, the correct output is “needs_review” with a clear reason, not a guessed conclusion."
+      }
+    ]
+  },
+  {
+    "sop_id": "SOP-07",
+    "title": "Evidence & Auditability Standard",
+    "source_docx": "policies_sops/SOP-07_evidence_and_auditability.docx",
+    "sections": [
+      {
+        "heading": "Purpose",
+        "text": "Ensure every AI-generated issue can be traced back to source documents."
+      },
+      {
+        "heading": "Evidence requirement",
+        "text": "Every reported issue must identify the source document and the relevant field, section, or quoted value used as evidence."
+      },
+      {
+        "heading": "No unsupported claims",
+        "text": "The assistant must distinguish documented facts from hypotheses and must not fabricate missing values."
+      },
+      {
+        "heading": "Audit trail",
+        "text": "A production design should preserve case ID, input document references, rule or model version, output, and review outcome for later audit."
+      }
+    ]
+  }
+]

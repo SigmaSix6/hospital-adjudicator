@@ -6,7 +6,8 @@ test. No real patient data is included.
 ## Package contents
 
 - `patient_cases/CASE-001` through `CASE-010`: synthetic `.docx` case documents
-- `policies_sops/`: review policies and validation guidance
+- `policies_sops/`: review policies and validation guidance (`sops.json` is the runtime source;
+  the original `.docx` files remain for documentation)
 - `case_manifest.csv`: one row per supplied case document
 - `data_dictionary.md`: common document and field definitions
 - `docs/requirement-analysis.md`: example requirement-gathering format

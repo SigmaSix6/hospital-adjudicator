@@ -14,15 +14,18 @@ Reported, not gated: finding precision/recall, mock-vs-live SOP-03 agreement, ve
 from __future__ import annotations
 
 import argparse
+import os
 import sys
-from collections import Counter, defaultdict
+from collections import Counter
 from datetime import datetime, timezone
 from pathlib import Path
 
 import httpx
 import yaml
+from dotenv import load_dotenv
 
 ROOT = Path(__file__).resolve().parents[1]
+load_dotenv(ROOT / ".env", override=False)
 CLEAN_CASES = ("CASE-001", "CASE-006")
 
 
@@ -100,6 +103,7 @@ def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--base-url", default="http://127.0.0.1:8741")
     ap.add_argument("--llm-mode", choices=["live", "mock"], default=None)
+    ap.add_argument("--api-key", default=os.getenv("REVIEW_API_KEY"), help="REVIEW_API_KEY (or set env)")
     ap.add_argument("--use-cache", action="store_true", help="Allow cached LLM responses (default: disabled)")
     ap.add_argument("--stability", type=int, default=0, help="Repeat LLM cases N times (cache disabled)")
     ap.add_argument("--compare-mock", action="store_true", help="Also run mock and compare SOP-03 verdicts")
@@ -107,10 +111,14 @@ def main() -> int:
     args = ap.parse_args()
 
     gold = yaml.safe_load((ROOT / "eval" / "expected.yaml").read_text())
-    client = httpx.Client(base_url=args.base_url, timeout=180)
+    headers = {"X-API-Key": args.api_key} if args.api_key else {}
+    client = httpx.Client(base_url=args.base_url, timeout=180, headers=headers)
     health = client.get("/health").json()
     mode = args.llm_mode or health["default_llm_mode"]
     label = "eval-live" if mode == "live" else "eval-mock"
+    if mode == "live" and not args.api_key:
+        print("error: live eval requires REVIEW_API_KEY (--api-key or env).", file=sys.stderr)
+        return 2
 
     def review(case_id: str, llm_mode: str, run_label: str, cache: bool) -> dict:
         resp = client.post(f"/cases/{case_id}/review",

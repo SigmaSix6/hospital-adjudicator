@@ -9,6 +9,8 @@ export interface Health {
   default_llm_mode: LlmMode;
   gemini_configured: boolean;
   gemini_model: string;
+  review_api_key_configured: boolean;
+  allow_live_batch: boolean;
   rule_set_version: string;
   prompt_version: string;
 }

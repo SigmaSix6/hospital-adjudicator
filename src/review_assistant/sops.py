@@ -2,31 +2,47 @@
 
 from __future__ import annotations
 
-import re
+import hashlib
+import json
 from functools import lru_cache
 from pathlib import Path
 
-from .ingestion import parse_docx, sha256_file
 from .models import PolicyRef, Sop, SopSection
+
+SOPS_RELATIVE_PATH = Path("policies_sops") / "sops.json"
+
+
+def _sop_version(payload: dict) -> str:
+    canonical = json.dumps(payload, sort_keys=True, ensure_ascii=False, separators=(",", ":"))
+    digest = hashlib.sha256(canonical.encode("utf-8")).hexdigest()
+    return f"sha256:{digest[:12]}"
 
 
 @lru_cache(maxsize=4)
-def load_sops(data_dir: Path) -> dict[str, Sop]:
+def _load_sops_cached(data_dir: Path, mtime: float) -> dict[str, Sop]:
+    path = data_dir / SOPS_RELATIVE_PATH
+    entries = json.loads(path.read_text(encoding="utf-8"))
     registry: dict[str, Sop] = {}
-    for path in sorted((data_dir / "policies_sops").glob("SOP-*.docx")):
-        match = re.match(r"(SOP-\d+)", path.name)
-        if not match:
-            continue
-        sop_id = match.group(1)
-        title, _, sections = parse_docx(path)
+    for entry in entries:
+        sop_id = entry["sop_id"]
+        version_payload = {
+            "sop_id": entry["sop_id"],
+            "title": entry["title"],
+            "sections": entry["sections"],
+        }
         registry[sop_id] = Sop(
             sop_id=sop_id,
-            title=title.removeprefix(sop_id).strip(),
-            file=str(path.relative_to(data_dir)),
-            version=f"sha256:{sha256_file(path)[:12]}",
-            sections=[SopSection(heading=s.name, text=s.value) for s in sections],
+            title=entry["title"],
+            file=SOPS_RELATIVE_PATH.as_posix(),
+            version=_sop_version(version_payload),
+            sections=[SopSection(heading=s["heading"], text=s["text"]) for s in entry["sections"]],
         )
     return registry
+
+
+def load_sops(data_dir: Path) -> dict[str, Sop]:
+    path = data_dir / SOPS_RELATIVE_PATH
+    return _load_sops_cached(data_dir, path.stat().st_mtime)
 
 
 class SopRegistry:
